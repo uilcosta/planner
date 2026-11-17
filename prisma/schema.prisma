@@ -1,0 +1,226 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  avatarUrl     String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  categories    Category[]
+  institutions  Institution[]
+  accounts      Account[]
+  plannedItems  PlannedItem[]
+  transactions  Transaction[]
+  caixinhas     Caixinha[]
+  contributions Contribution[]
+
+  @@map("users")
+}
+
+model Contribution {
+  id            String     @id @default(cuid())
+  caixinhaId    String
+  caixinha      Caixinha   @relation(fields: [caixinhaId], references: [id], onDelete: Cascade)
+  transactionId String?    // a transação real (saída no controle)
+  transaction   Transaction? @relation(fields: [transactionId], references: [id], onDelete: SetNull)
+  userId        String
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount        Decimal    @db.Decimal(15,2)
+  date          DateTime
+  month         Int        // 1-12
+  year          Int
+  notes         String?
+  createdAt     DateTime   @default(now())
+
+  @@index([caixinhaId, month, year])
+  @@index([userId])
+  @@map("contributions")
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  icon        String?   // nome ícone Lucide
+  color       String?   // cor hex
+  type        CategoryType // INCOME | EXPENSE | TRANSFER
+  parentId    String?
+  parent      Category? @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryHierarchy")
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  plannedItems PlannedItem[]
+  transactions Transaction[]
+
+  @@unique([name, userId, parentId])
+  @@map("categories")
+}
+
+model Institution {
+  id        String   @id @default(cuid())
+  name      String
+  type      InstitutionType // BANK | CREDIT_CARD | INVESTMENT | OTHER
+  color     String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  accounts Account[]
+
+  @@unique([name, userId])
+  @@map("institutions")
+}
+
+model Account {
+  id              String       @id @default(cuid())
+  name            String
+  type            AccountType  // CHECKING | SAVINGS | CREDIT_CARD | INVESTMENT | CASH
+  institutionId   String
+  institution     Institution  @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  initialBalance  Decimal      @default(0) @db.Decimal(15,2)
+  currentBalance  Decimal      @default(0) @db.Decimal(15,2)
+  creditLimit     Decimal?     @db.Decimal(15,2) // para cartões crédito
+  closingDay      Int?         // 1-31
+  dueDay          Int?         // 1-31
+  isActive        Boolean      @default(true)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  transactions Transaction[]
+  caixinhas     Caixinha[]
+
+  @@map("accounts")
+}
+
+model PlannedItem {
+  id                   String         @id @default(cuid())
+  description          String
+  amount               Decimal        @db.Decimal(15,2)
+  type                 TransactionType // INCOME | EXPENSE
+  categoryId           String
+  category             Category       @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  userId               String
+  user                 User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  month                Int            // 1-12
+  year                 Int            // ex: 2026
+  recurrence           RecurrenceType @default(ONE_TIME) // ONE_TIME | MONTHLY | YEARLY | CUSTOM
+  recurrenceEndDate    DateTime?      // para recorrência custom
+  dayOfMonth           Int?           // 1-31, quando recorrência aplica
+  isActive             Boolean        @default(true)
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+
+  @@unique([userId, month, year, description, categoryId, dayOfMonth])
+  @@index([userId, month, year])
+  @@map("planned_items")
+}
+
+model Transaction {
+  id                 String             @id @default(cuid())
+  description        String
+  amount             Decimal            @db.Decimal(15,2)
+  type               TransactionType    // INCOME | EXPENSE | TRANSFER
+  categoryId         String
+  category           Category           @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  accountId          String
+  account            Account            @relation(fields: [accountId], references: [id], onDelete: Restrict)
+  userId             String
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date               DateTime           // data transação
+  month              Int                // 1-12 (desnormalizado para queries)
+  year               Int                // ex: 2026
+  status             TransactionStatus  @default(PENDING) // PENDING | COMPLETED | CANCELLED
+  isRecurring        Boolean            @default(false)
+  recurringGroupId   String?            // agrupa transações recorrentes
+  caixinhaId         String?            // link para caixinha se for aporte
+  caixinha           Caixinha?          @relation(fields: [caixinhaId], references: [id], onDelete: SetNull)
+  contributions      Contribution[]
+  notes              String?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  @@index([userId, month, year])
+  @@index([userId, date])
+  @@index([userId, caixinhaId])
+  @@map("transactions")
+}
+
+model Caixinha {
+  id                   String   @id @default(cuid())
+  name                 String
+  description          String?
+  icon                 String?  // nome ícone Lucide
+  color                String?  // cor hex
+  targetAmount         Decimal  @db.Decimal(15,2)
+  currentAmount        Decimal  @default(0) @db.Decimal(15,2)
+  targetDate           DateTime? // prazo
+  monthlyContribution  Decimal  @default(0) @db.Decimal(15,2) // sugestão mensal
+  accountId            String?  // onde dinheiro fica guardado
+  account              Account? @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  userId               String
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isActive             Boolean  @default(true)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  contributions Contribution[]
+  transactions Transaction[]
+
+  @@map("caixinhas")
+}
+
+enum CategoryType {
+  INCOME
+  EXPENSE
+  TRANSFER
+}
+
+enum InstitutionType {
+  BANK
+  CREDIT_CARD
+  INVESTMENT
+  OTHER
+}
+
+enum AccountType {
+  CHECKING
+  SAVINGS
+  CREDIT_CARD
+  INVESTMENT
+  CASH
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+  TRANSFER
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+enum RecurrenceType {
+  ONE_TIME
+  MONTHLY
+  YEARLY
+  CUSTOM
+}
