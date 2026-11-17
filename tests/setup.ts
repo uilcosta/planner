@@ -34,14 +34,20 @@ vi.mock('next/headers', () => ({
 
 // Mock Supabase
 vi.mock('@/lib/supabase/server', () => ({
-  createServerSupabaseClient: vi.fn(() => ({
-    auth: {
-      getUser: vi.fn(() => Promise.resolve({ data: { user: null }, error: null })),
-      getSession: vi.fn(() => Promise.resolve({ data: { session: null }, error: null })),
-    },
-  })),
-  getSupabaseServerUser: vi.fn(() => Promise.resolve(null)),
-  getSupabaseServerSession: vi.fn(() => Promise.resolve(null)),
+  createSupabaseServerClient: vi.fn(() =>
+    Promise.resolve({
+      auth: {
+        signInWithPassword: vi.fn(),
+        signUp: vi.fn(),
+        signOut: vi.fn(),
+        getUser: vi.fn(() => Promise.resolve({ data: { user: null }, error: null })),
+        getSession: vi.fn(() => Promise.resolve({ data: { session: null }, error: null })),
+      },
+    })
+  ),
+  getUser: vi.fn(() => Promise.resolve(null)),
+  getUserId: vi.fn(() => Promise.reject(new Error('Usuário não autenticado'))),
+  getSession: vi.fn(() => Promise.resolve(null)),
 }));
 
 vi.mock('@/lib/supabase/client', () => ({
@@ -49,12 +55,18 @@ vi.mock('@/lib/supabase/client', () => ({
     auth: {
       getUser: vi.fn(() => Promise.resolve({ data: { user: null }, error: null })),
       getSession: vi.fn(() => Promise.resolve({ data: { session: null }, error: null })),
+      onAuthStateChange: vi.fn(() => ({
+        data: { subscription: { unsubscribe: vi.fn() } },
+      })),
     },
   })),
   getSupabaseBrowserClient: vi.fn(() => ({
     auth: {
       getUser: vi.fn(() => Promise.resolve({ data: { user: null }, error: null })),
       getSession: vi.fn(() => Promise.resolve({ data: { session: null }, error: null })),
+      onAuthStateChange: vi.fn(() => ({
+        data: { subscription: { unsubscribe: vi.fn() } },
+      })),
     },
   })),
 }));

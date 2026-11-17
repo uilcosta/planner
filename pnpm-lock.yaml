@@ -204,7 +204,7 @@ importers:
         version: 16.4.6(@babel/core@7.29.13(supports-color@7.2.0))(@playwright/test@1.65.1)(@types/node@20.19.43)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       next-pwa:
         specifier: ^5.6.0
-        version: 5.6.0(@babel/core@7.29.13(supports-color@7.2.0))(esbuild@0.28.2)(lightningcss@1.32.0)(next@16.4.6(@babel/core@7.29.13(supports-color@7.2.0))(@playwright/test@1.65.1)(@types/node@20.19.43)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(postcss@8.5.23)(supports-color@7.2.0)(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(sharp@0.35.5(@types/node@20.19.43)))
+        version: 5.6.0(@babel/core@7.29.13(supports-color@7.2.0))(esbuild@0.28.2)(lightningcss@1.32.0)(next@16.4.6(@babel/core@7.29.13(supports-color@7.2.0))(@playwright/test@1.65.1)(@types/node@20.19.43)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(postcss@8.5.33)(supports-color@7.2.0)(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(sharp@0.35.5(@types/node@20.19.43)))
       react:
         specifier: 19.3.0
         version: 19.3.0
@@ -227,6 +227,9 @@ importers:
       '@playwright/test':
         specifier: ^1.65.1
         version: 1.65.1
+      '@tailwindcss/postcss':
+        specifier: ^4.3.5
+        version: 4.3.5
       '@tailwindcss/turbopack':
         specifier: 4.3.3
         version: 4.3.3
@@ -254,6 +257,9 @@ importers:
       '@vitest/ui':
         specifier: ^5.1.0
         version: 5.1.0(vitest@5.1.0)
+      autoprefixer:
+        specifier: ^10.6.2
+        version: 10.6.2(postcss@8.5.33)
       eslint:
         specifier: ^9
         version: 9.39.5(jiti@2.7.0)(supports-color@7.2.0)
@@ -1643,8 +1649,17 @@ packages:
   '@tailwindcss/node@4.3.3':
     resolution: {integrity: sha512-/T8IKEsf9VTU6tLjgC7+sv2mOPtQxzE2jMw7u4Tt40Tx+QSZxpzh95/H6cMKoja9XuW7iMdLJYBB0o9G1CaAgg==}
 
+  '@tailwindcss/node@4.3.5':
+    resolution: {integrity: sha512-yT53FzV4ke0cr/BguDxhWMpm5MJu1O2muzk+tKw6lKHjODAsYArBbWwFbJiaksfzFv1tpkO9QHGzmfs1hJT66g==}
+
   '@tailwindcss/oxide-android-arm64@4.3.3':
     resolution: {integrity: sha512-Y85A2gmPSkl5Ve5qR86GL4HT509cFqQh1aes9p3sSkyTPwt0Pppf3GkwGe4JPACcRYjgJIEhQgM6dBClnr0NYw==}
+    engines: {node: '>= 20'}
+    cpu: [arm64]
+    os: [android]
+
+  '@tailwindcss/oxide-android-arm64@4.3.5':
+    resolution: {integrity: sha512-Se0z5xMqcSQanJD1IYmO0cGpK3iv0fp3ZsIT7xRJZ1Da5PghvNoc46zz4jIQn+aan3dV9T8AermFNN9QPmsh0Q==}
     engines: {node: '>= 20'}
     cpu: [arm64]
     os: [android]
@@ -1655,8 +1670,20 @@ packages:
     cpu: [arm64]
     os: [darwin]
 
+  '@tailwindcss/oxide-darwin-arm64@4.3.5':
+    resolution: {integrity: sha512-UPrgTDuUbvmqGMZuCnmI3FKee/tYKzKdp00/kuB4oSGB213VYg8QTdF7lVhnPoBXq/mIfJ+ILoBFqNOboWcMwQ==}
+    engines: {node: '>= 20'}
+    cpu: [arm64]
+    os: [darwin]
+
   '@tailwindcss/oxide-darwin-x64@4.3.3':
     resolution: {integrity: sha512-fAeUqfV5ndhxRwai8cXGzdLvul9utWOmeTkv69unv4ZXixjn61Z+p9lCWdwOwA3TYboG3BwdVuN/RDjhBRl0mw==}
+    engines: {node: '>= 20'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@tailwindcss/oxide-darwin-x64@4.3.5':
+    resolution: {integrity: sha512-E+p7HEtjI0b8D7kbbWxH067cGui6d4c79COGko9fAPVE3rwc1E7ld2HFCbaG86AOGWS5VKQYqZOaf38ya4uxTQ==}
     engines: {node: '>= 20'}
     cpu: [x64]
     os: [darwin]
@@ -1667,14 +1694,33 @@ packages:
     cpu: [x64]
     os: [freebsd]
 
+  '@tailwindcss/oxide-freebsd-x64@4.3.5':
+    resolution: {integrity: sha512-yWEWcWyAG7rWOcTpJTjdhQ3pcaFY2h+0bqTRfgU3G2fz87ZU3AKdvdZKhslD+kyHnjBUWKvNdRYwIYC5dI1tIg==}
+    engines: {node: '>= 20'}
+    cpu: [x64]
+    os: [freebsd]
+
   '@tailwindcss/oxide-linux-arm-gnueabihf@4.3.3':
     resolution: {integrity: sha512-aAYUprJAJQWWbRrPvtjdroZ56Md+JM8pMiopS6xGEwDfLhqj+2ver2p4nU4Mb3CRqcMmNBjo8KkUgcxhkzVQGQ==}
     engines: {node: '>= 20'}
     cpu: [arm]
     os: [linux]
 
+  '@tailwindcss/oxide-linux-arm-gnueabihf@4.3.5':
+    resolution: {integrity: sha512-WmeVjtJhZlr+smpqcdR2kQkkn6arHIJnUIBxTO2EJcTLGY1ecVXNo2hbSn8xc0IH2aEtys936iMWKGyj0GaKnA==}
+    engines: {node: '>= 20'}
+    cpu: [arm]
+    os: [linux]
+
   '@tailwindcss/oxide-linux-arm64-gnu@4.3.3':
     resolution: {integrity: sha512-nDxldcEENOxZRzC2uu9jrutZdAAQtb+8WWDCSnWL1zvBk1+FN+x6MtDViPB5AJMfttVCUhehGWus3XBPgatM/w==}
+    engines: {node: '>= 20'}
+    cpu: [arm64]
+    os: [linux]
+    libc: [glibc]
+
+  '@tailwindcss/oxide-linux-arm64-gnu@4.3.5':
+    resolution: {integrity: sha512-DTCSyucc6ShMp1QMqV5R94Z7xlgNgUzkGmFF1rL5HH2Qjy4eSmEqy+YLGkqqYvWa4sILtgrBt1JjRKbneQtiFQ==}
     engines: {node: '>= 20'}
     cpu: [arm64]
     os: [linux]
@@ -1687,6 +1733,13 @@ packages:
     os: [linux]
     libc: [musl]
 
+  '@tailwindcss/oxide-linux-arm64-musl@4.3.5':
+    resolution: {integrity: sha512-H9lsvO4x9E4nE4Hi8h7NHHw0O/kcVSu+iOyFHNGdYzazGgDjFHZbE6S3hQ8kMcbNXSBlMdNi67LV5EVqtpaJtw==}
+    engines: {node: '>= 20'}
+    cpu: [arm64]
+    os: [linux]
+    libc: [musl]
+
   '@tailwindcss/oxide-linux-x64-gnu@4.3.3':
     resolution: {integrity: sha512-tx7us1muwOKAKWao2v/GaafFeQboE6aj88vC6ziN2NCGcRm8gWUhwjzg+YdVB1e4boAtdtma4L43onunI6NS4w==}
     engines: {node: '>= 20'}
@@ -1694,8 +1747,22 @@ packages:
     os: [linux]
     libc: [glibc]
 
+  '@tailwindcss/oxide-linux-x64-gnu@4.3.5':
+    resolution: {integrity: sha512-4uxQvtBvPuIdl13WfUBj9xMZHH14PtHZ8OZdtLmdyDtG66sCa1t599NZT+jagkUzRtWhuul1qRZQ1nAJscXN5g==}
+    engines: {node: '>= 20'}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+
   '@tailwindcss/oxide-linux-x64-musl@4.3.3':
     resolution: {integrity: sha512-SJxX60smvHgasZoBy11dX6YRjXJFovwWBoedhbQPOBzgFWBHGB+TVPWB9BxzR7TTxU8FQZAI2AyiNCMzFm8Img==}
+    engines: {node: '>= 20'}
+    cpu: [x64]
+    os: [linux]
+    libc: [musl]
+
+  '@tailwindcss/oxide-linux-x64-musl@4.3.5':
+    resolution: {integrity: sha512-0JQAzs7jwbA7O6+z/adU+Jk3AXwsu3npAhtr5escXS7TqEqWcaDV7qHuI+0Vy/KQRuVGnLQREcSJWYauyV3oqg==}
     engines: {node: '>= 20'}
     cpu: [x64]
     os: [linux]
@@ -1713,8 +1780,25 @@ packages:
       - '@emnapi/wasi-threads'
       - tslib
 
+  '@tailwindcss/oxide-wasm32-wasi@4.3.5':
+    resolution: {integrity: sha512-OJhFmlEfdzMr+avACdi40RPtnkW0B6hXyxL/8r+tnEHBWZji36CYRjEXrrvgBmaYsD3oEOBqwYFRKsYvzFe7Bw==}
+    engines: {node: ^20.19.0 || ^22.13.0 || >=23.5.0}
+    bundledDependencies:
+      - '@napi-rs/wasm-runtime'
+      - '@emnapi/core'
+      - '@emnapi/runtime'
+      - '@tybys/wasm-util'
+      - '@emnapi/wasi-threads'
+      - tslib
+
   '@tailwindcss/oxide-win32-arm64-msvc@4.3.3':
     resolution: {integrity: sha512-3rc292Ca2ceK6Ulcc/bAVnTs/3nDtoPhyEKlgPv+yQJQi/JS/AMJlqzxvlDacL1nekbrcf6bTqp/jV4qgnPxNQ==}
+    engines: {node: '>= 20'}
+    cpu: [arm64]
+    os: [win32]
+
+  '@tailwindcss/oxide-win32-arm64-msvc@4.3.5':
+    resolution: {integrity: sha512-9o8jgthi+QE5eandnboiJT64VQfnIArfZzSTdgbhEK5aafdiu2jTW9Honi/mwYHxBZuH1vAC57IFyrh+0iK5Gg==}
     engines: {node: '>= 20'}
     cpu: [arm64]
     os: [win32]
@@ -1725,9 +1809,22 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@tailwindcss/oxide-win32-x64-msvc@4.3.5':
+    resolution: {integrity: sha512-XiKFfIy1RWe7qK4WqByxNW7Oz1/nkOy8o/BWhHminyV1PmpUd8Eedj5v2A8h2kpqeVlz6xRnwk9Fr/ZXNLcZfg==}
+    engines: {node: '>= 20'}
+    cpu: [x64]
+    os: [win32]
+
   '@tailwindcss/oxide@4.3.3':
     resolution: {integrity: sha512-krXjAikiaFSPaK/FkAQT5UTx3VormQaiZ5hBFlJZ9UFQGB/rwg1MZIhHAG9smMQRTdyJxP6Qt5MwMtdyU5FWrA==}
     engines: {node: '>= 20'}
+
+  '@tailwindcss/oxide@4.3.5':
+    resolution: {integrity: sha512-PynqGLZsZvwM9tqD/CUxkOIfyd6K5elZ2MooauzJryP/UqXYgi3yYbtt3N0Xe+MHV/eFKPFQCEfIKAqlAS1CBg==}
+    engines: {node: '>= 20'}
+
+  '@tailwindcss/postcss@4.3.5':
+    resolution: {integrity: sha512-FAV37Tlx9wBiT/hkfgVD0Q6CWsP2oUX3lf28nrfjW8+ksILjnpuFulUqWDfNR4/ZiEHHDRBX8DUTzD1Rys687A==}
 
   '@tailwindcss/turbopack@4.3.3':
     resolution: {integrity: sha512-FgL4wRgItNdXcDjcgYUSd59gNsWqNVK4GotjZimZMmt7OOIkRNqH2QEUcRXLdBDXvwTsi5rkYxDxzfrFUkmObQ==}
@@ -2223,6 +2320,13 @@ packages:
   at-least-node@1.0.0:
     resolution: {integrity: sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==}
     engines: {node: '>= 4.0.0'}
+
+  autoprefixer@10.6.2:
+    resolution: {integrity: sha512-VOw9/yGTGwPPgzFcODtcv6zhEPIeIWkRSe10L2ri2f5vZ7ID7lCt6jZzRF5/ubgOZ+szYydmEF5AYsA5jxX1tA==}
+    engines: {node: ^10 || ^12 || >=14}
+    hasBin: true
+    peerDependencies:
+      postcss: ^8.1.0
 
   available-typed-arrays@1.0.7:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
@@ -2873,6 +2977,9 @@ packages:
   for-each@0.3.5:
     resolution: {integrity: sha512-dKx12eRCVIzqCxFGplyFKJMPvLEWgmNtUrpTiJIR5u97zEhRG8ySrtboPHZXx7daLxQVrl643cTzbab2tkQjxg==}
     engines: {node: '>= 0.4'}
+
+  fraction.js@5.3.4:
+    resolution: {integrity: sha512-1X1NTtiJphryn/uLQz3whtY6jK3fTqoE3ohKs0tT+Ujr1W59oopxmoEh7Lu5p6vBaPbgoM0bzveAW4Qi5RyWDQ==}
 
   fs-extra@9.1.0:
     resolution: {integrity: sha512-hcg3ZmepS30/7BSFqRvoo3DOMQu7IjqxO5nCDt+zM9XWjb33Wg7ziNT+Qvqbuc3+gWpzO02JubVyk2G4Zvo1OQ==}
@@ -3825,6 +3932,9 @@ packages:
     resolution: {integrity: sha512-/+5VFTchJDoVj3bhoqi6UeymcD00DAwb1nJwamzPvHEszJ4FpF6SNNbUbOS8yI56qHzdV8eK0qEfOSiodkTdxg==}
     engines: {node: '>= 0.4'}
 
+  postcss-value-parser@4.2.0:
+    resolution: {integrity: sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==}
+
   postcss@8.5.23:
     resolution: {integrity: sha512-g50586zr4bZmwFiTlflMu8E0bDTb5I5gertgwAKmsdUlTQIhZtunzUlD1WSzwcVWPoAVpsrA6vlfCD7oXvRwgg==}
     engines: {node: ^10 || ^12 || >=14}
@@ -4283,6 +4393,9 @@ packages:
 
   tailwindcss@4.3.3:
     resolution: {integrity: sha512-gOhV3P7ufE62QDGg1zVaTgCR+EtPv92k2nIhVcVKcLmxT1sUBsQGhnZj175j+MqRt4zLF7ic+sCYjfhxMxj7YQ==}
+
+  tailwindcss@4.3.5:
+    resolution: {integrity: sha512-FcQk9BuffmEHJP2G0XmB2SplU1aLTI7j07Kunk+U74Ny+XiWOtzXz9aujFZ/avntw1e2cOv/3PkgzflQ7gX2vQ==}
 
   tapable@2.3.4:
     resolution: {integrity: sha512-NHFiWnAbMJxNNpBwiO7jJVGDuqMxT9/oV8v57RR+fgBQShkJil5inGD8/xWy0hjLyHQyX1tu27QANhlz3KBqCg==}
@@ -5999,40 +6112,86 @@ snapshots:
       source-map-js: 1.2.2
       tailwindcss: 4.3.3
 
+  '@tailwindcss/node@4.3.5':
+    dependencies:
+      '@jridgewell/remapping': 2.3.5
+      enhanced-resolve: 5.27.0
+      jiti: 2.7.0
+      lightningcss: 1.33.0
+      magic-string: 1.4.5
+      source-map-js: 1.2.2
+      tailwindcss: 4.3.5
+
   '@tailwindcss/oxide-android-arm64@4.3.3':
+    optional: true
+
+  '@tailwindcss/oxide-android-arm64@4.3.5':
     optional: true
 
   '@tailwindcss/oxide-darwin-arm64@4.3.3':
     optional: true
 
+  '@tailwindcss/oxide-darwin-arm64@4.3.5':
+    optional: true
+
   '@tailwindcss/oxide-darwin-x64@4.3.3':
+    optional: true
+
+  '@tailwindcss/oxide-darwin-x64@4.3.5':
     optional: true
 
   '@tailwindcss/oxide-freebsd-x64@4.3.3':
     optional: true
 
+  '@tailwindcss/oxide-freebsd-x64@4.3.5':
+    optional: true
+
   '@tailwindcss/oxide-linux-arm-gnueabihf@4.3.3':
+    optional: true
+
+  '@tailwindcss/oxide-linux-arm-gnueabihf@4.3.5':
     optional: true
 
   '@tailwindcss/oxide-linux-arm64-gnu@4.3.3':
     optional: true
 
+  '@tailwindcss/oxide-linux-arm64-gnu@4.3.5':
+    optional: true
+
   '@tailwindcss/oxide-linux-arm64-musl@4.3.3':
+    optional: true
+
+  '@tailwindcss/oxide-linux-arm64-musl@4.3.5':
     optional: true
 
   '@tailwindcss/oxide-linux-x64-gnu@4.3.3':
     optional: true
 
+  '@tailwindcss/oxide-linux-x64-gnu@4.3.5':
+    optional: true
+
   '@tailwindcss/oxide-linux-x64-musl@4.3.3':
+    optional: true
+
+  '@tailwindcss/oxide-linux-x64-musl@4.3.5':
     optional: true
 
   '@tailwindcss/oxide-wasm32-wasi@4.3.3':
     optional: true
 
+  '@tailwindcss/oxide-wasm32-wasi@4.3.5':
+    optional: true
+
   '@tailwindcss/oxide-win32-arm64-msvc@4.3.3':
     optional: true
 
+  '@tailwindcss/oxide-win32-arm64-msvc@4.3.5':
+    optional: true
+
   '@tailwindcss/oxide-win32-x64-msvc@4.3.3':
+    optional: true
+
+  '@tailwindcss/oxide-win32-x64-msvc@4.3.5':
     optional: true
 
   '@tailwindcss/oxide@4.3.3':
@@ -6049,6 +6208,29 @@ snapshots:
       '@tailwindcss/oxide-wasm32-wasi': 4.3.3
       '@tailwindcss/oxide-win32-arm64-msvc': 4.3.3
       '@tailwindcss/oxide-win32-x64-msvc': 4.3.3
+
+  '@tailwindcss/oxide@4.3.5':
+    optionalDependencies:
+      '@tailwindcss/oxide-android-arm64': 4.3.5
+      '@tailwindcss/oxide-darwin-arm64': 4.3.5
+      '@tailwindcss/oxide-darwin-x64': 4.3.5
+      '@tailwindcss/oxide-freebsd-x64': 4.3.5
+      '@tailwindcss/oxide-linux-arm-gnueabihf': 4.3.5
+      '@tailwindcss/oxide-linux-arm64-gnu': 4.3.5
+      '@tailwindcss/oxide-linux-arm64-musl': 4.3.5
+      '@tailwindcss/oxide-linux-x64-gnu': 4.3.5
+      '@tailwindcss/oxide-linux-x64-musl': 4.3.5
+      '@tailwindcss/oxide-wasm32-wasi': 4.3.5
+      '@tailwindcss/oxide-win32-arm64-msvc': 4.3.5
+      '@tailwindcss/oxide-win32-x64-msvc': 4.3.5
+
+  '@tailwindcss/postcss@4.3.5':
+    dependencies:
+      '@alloc/quick-lru': 5.3.0
+      '@tailwindcss/node': 4.3.5
+      '@tailwindcss/oxide': 4.3.5
+      postcss: 8.5.33
+      tailwindcss: 4.3.5
 
   '@tailwindcss/turbopack@4.3.3':
     dependencies:
@@ -6583,6 +6765,15 @@ snapshots:
 
   at-least-node@1.0.0: {}
 
+  autoprefixer@10.6.2(postcss@8.5.33):
+    dependencies:
+      browserslist: 4.29.5
+      caniuse-lite: 1.0.30001826
+      fraction.js: 5.3.4
+      picocolors: 1.1.1
+      postcss: 8.5.33
+      postcss-value-parser: 4.2.0
+
   available-typed-arrays@1.0.7:
     dependencies:
       possible-typed-array-names: 1.1.0
@@ -6591,14 +6782,14 @@ snapshots:
 
   axobject-query@4.1.0: {}
 
-  babel-loader@8.4.1(@babel/core@7.29.13(supports-color@7.2.0))(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(sharp@0.35.5(@types/node@20.19.43))):
+  babel-loader@8.4.1(@babel/core@7.29.13(supports-color@7.2.0))(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(sharp@0.35.5(@types/node@20.19.43))):
     dependencies:
       '@babel/core': 7.29.13(supports-color@7.2.0)
       find-cache-dir: 3.3.2
       loader-utils: 2.0.4
       make-dir: 3.1.0
       schema-utils: 2.7.1
-      webpack: 5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(sharp@0.35.5(@types/node@20.19.43))
+      webpack: 5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(sharp@0.35.5(@types/node@20.19.43))
 
   babel-plugin-polyfill-corejs2@0.4.17(@babel/core@7.29.13(supports-color@7.2.0))(supports-color@7.2.0):
     dependencies:
@@ -6724,10 +6915,10 @@ snapshots:
 
   citty@0.2.2: {}
 
-  clean-webpack-plugin@4.0.0(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(sharp@0.35.5(@types/node@20.19.43))):
+  clean-webpack-plugin@4.0.0(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(sharp@0.35.5(@types/node@20.19.43))):
     dependencies:
       del: 4.1.1
-      webpack: 5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(sharp@0.35.5(@types/node@20.19.43))
+      webpack: 5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(sharp@0.35.5(@types/node@20.19.43))
 
   client-only@0.0.1: {}
 
@@ -7381,6 +7572,8 @@ snapshots:
     dependencies:
       is-callable: 1.2.7
 
+  fraction.js@5.3.4: {}
+
   fs-extra@9.1.0:
     dependencies:
       at-least-node: 1.0.0
@@ -8015,16 +8208,16 @@ snapshots:
 
   minimist@1.2.8: {}
 
-  minimizer-webpack-plugin@5.14.0(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(sharp@0.35.5(@types/node@20.19.43))(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(sharp@0.35.5(@types/node@20.19.43))):
+  minimizer-webpack-plugin@5.14.0(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(sharp@0.35.5(@types/node@20.19.43))(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(sharp@0.35.5(@types/node@20.19.43))):
     dependencies:
       jest-worker: 27.5.1
-      schema-utils: 4.8.3(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(sharp@0.35.5(@types/node@20.19.43)))
+      schema-utils: 4.8.3(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(sharp@0.35.5(@types/node@20.19.43)))
       terser: 5.51.2
-      webpack: 5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(sharp@0.35.5(@types/node@20.19.43))
+      webpack: 5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(sharp@0.35.5(@types/node@20.19.43))
     optionalDependencies:
       esbuild: 0.28.2
       lightningcss: 1.32.0
-      postcss: 8.5.23
+      postcss: 8.5.33
       sharp: 0.35.5(@types/node@20.19.43)
 
   mrmime@2.0.1: {}
@@ -8037,14 +8230,14 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
-  next-pwa@5.6.0(@babel/core@7.29.13(supports-color@7.2.0))(esbuild@0.28.2)(lightningcss@1.32.0)(next@16.4.6(@babel/core@7.29.13(supports-color@7.2.0))(@playwright/test@1.65.1)(@types/node@20.19.43)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(postcss@8.5.23)(supports-color@7.2.0)(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(sharp@0.35.5(@types/node@20.19.43))):
+  next-pwa@5.6.0(@babel/core@7.29.13(supports-color@7.2.0))(esbuild@0.28.2)(lightningcss@1.32.0)(next@16.4.6(@babel/core@7.29.13(supports-color@7.2.0))(@playwright/test@1.65.1)(@types/node@20.19.43)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(postcss@8.5.33)(supports-color@7.2.0)(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(sharp@0.35.5(@types/node@20.19.43))):
     dependencies:
-      babel-loader: 8.4.1(@babel/core@7.29.13(supports-color@7.2.0))(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(sharp@0.35.5(@types/node@20.19.43)))
-      clean-webpack-plugin: 4.0.0(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(sharp@0.35.5(@types/node@20.19.43)))
+      babel-loader: 8.4.1(@babel/core@7.29.13(supports-color@7.2.0))(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(sharp@0.35.5(@types/node@20.19.43)))
+      clean-webpack-plugin: 4.0.0(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(sharp@0.35.5(@types/node@20.19.43)))
       globby: 11.1.0
       next: 16.4.6(@babel/core@7.29.13(supports-color@7.2.0))(@playwright/test@1.65.1)(@types/node@20.19.43)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      terser-webpack-plugin: 5.6.1(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(sharp@0.35.5(@types/node@20.19.43)))
-      workbox-webpack-plugin: 6.6.0(supports-color@7.2.0)(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(sharp@0.35.5(@types/node@20.19.43)))
+      terser-webpack-plugin: 5.6.1(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(sharp@0.35.5(@types/node@20.19.43)))
+      workbox-webpack-plugin: 6.6.0(supports-color@7.2.0)(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(sharp@0.35.5(@types/node@20.19.43)))
       workbox-window: 6.6.0
     transitivePeerDependencies:
       - '@babel/core'
@@ -8254,6 +8447,8 @@ snapshots:
       playwright-core: 1.65.1
 
   possible-typed-array-names@1.1.0: {}
+
+  postcss-value-parser@4.2.0: {}
 
   postcss@8.5.23:
     dependencies:
@@ -8514,14 +8709,14 @@ snapshots:
       ajv: 6.15.0
       ajv-keywords: 3.5.2(ajv@6.15.0)
 
-  schema-utils@4.8.3(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(sharp@0.35.5(@types/node@20.19.43))):
+  schema-utils@4.8.3(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(sharp@0.35.5(@types/node@20.19.43))):
     dependencies:
       '@types/json-schema': 7.0.15
       ajv: 8.20.0
       ajv-formats: 3.0.1(ajv@8.20.0)
       ajv-keywords: 5.1.0(ajv@8.20.0)
     optionalDependencies:
-      webpack: 5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(sharp@0.35.5(@types/node@20.19.43))
+      webpack: 5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(sharp@0.35.5(@types/node@20.19.43))
 
   semver@6.3.2: {}
 
@@ -8743,6 +8938,8 @@ snapshots:
 
   tailwindcss@4.3.3: {}
 
+  tailwindcss@4.3.5: {}
+
   tapable@2.3.4: {}
 
   temp-dir@2.0.0: {}
@@ -8754,17 +8951,17 @@ snapshots:
       type-fest: 0.16.0
       unique-string: 2.0.0
 
-  terser-webpack-plugin@5.6.1(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(sharp@0.35.5(@types/node@20.19.43))):
+  terser-webpack-plugin@5.6.1(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(sharp@0.35.5(@types/node@20.19.43))):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
-      schema-utils: 4.8.3(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(sharp@0.35.5(@types/node@20.19.43)))
+      schema-utils: 4.8.3(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(sharp@0.35.5(@types/node@20.19.43)))
       terser: 5.51.2
-      webpack: 5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(sharp@0.35.5(@types/node@20.19.43))
+      webpack: 5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(sharp@0.35.5(@types/node@20.19.43))
     optionalDependencies:
       esbuild: 0.28.2
       lightningcss: 1.32.0
-      postcss: 8.5.23
+      postcss: 8.5.33
 
   terser@5.51.2:
     dependencies:
@@ -9017,7 +9214,7 @@ snapshots:
 
   webpack-sources@3.7.0: {}
 
-  webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(sharp@0.35.5(@types/node@20.19.43)):
+  webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(sharp@0.35.5(@types/node@20.19.43)):
     dependencies:
       '@types/estree': 1.0.10
       '@types/json-schema': 7.0.15
@@ -9031,8 +9228,8 @@ snapshots:
       events: 3.3.0
       graceful-fs: 4.2.12
       mime-db: 1.54.0
-      minimizer-webpack-plugin: 5.14.0(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(sharp@0.35.5(@types/node@20.19.43))(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(sharp@0.35.5(@types/node@20.19.43)))
-      schema-utils: 4.8.3(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(sharp@0.35.5(@types/node@20.19.43)))
+      minimizer-webpack-plugin: 5.14.0(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(sharp@0.35.5(@types/node@20.19.43))(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(sharp@0.35.5(@types/node@20.19.43)))
+      schema-utils: 4.8.3(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(sharp@0.35.5(@types/node@20.19.43)))
       tapable: 2.3.4
       watchpack: 2.6.4
       webpack-sources: 3.7.0
@@ -9221,12 +9418,12 @@ snapshots:
 
   workbox-sw@6.6.0: {}
 
-  workbox-webpack-plugin@6.6.0(supports-color@7.2.0)(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(sharp@0.35.5(@types/node@20.19.43))):
+  workbox-webpack-plugin@6.6.0(supports-color@7.2.0)(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(sharp@0.35.5(@types/node@20.19.43))):
     dependencies:
       fast-json-stable-stringify: 2.1.0
       pretty-bytes: 5.6.0
       upath: 1.2.0
-      webpack: 5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.23)(sharp@0.35.5(@types/node@20.19.43))
+      webpack: 5.112.2(esbuild@0.28.2)(lightningcss@1.32.0)(postcss@8.5.33)(sharp@0.35.5(@types/node@20.19.43))
       webpack-sources: 1.4.3
       workbox-build: 6.6.0(supports-color@7.2.0)
     transitivePeerDependencies:
