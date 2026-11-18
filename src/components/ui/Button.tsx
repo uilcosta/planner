@@ -4,7 +4,7 @@ import { forwardRef, ButtonHTMLAttributes } from 'react';
 import { cn } from '@/lib/utils';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link' | 'success';
   size?: 'default' | 'sm' | 'lg' | 'icon';
   isLoading?: boolean;
 }
@@ -15,21 +15,22 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none rounded-lg';
+      'inline-flex items-center justify-center font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none rounded-lg';
 
     const variants = {
-      default: 'bg-primary-600 text-white hover:bg-primary-700',
-      destructive: 'bg-red-600 text-white hover:bg-red-700',
-      outline: 'border border-gray-300 bg-white hover:bg-gray-50',
-      secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200',
-      ghost: 'hover:bg-gray-100',
-      link: 'text-primary-600 underline-offset-4 hover:underline',
+      default: 'bg-primary-600 text-white hover:bg-primary-700 shadow-sm hover:shadow-md',
+      destructive: 'bg-danger-600 text-white hover:bg-danger-700 shadow-sm hover:shadow-md',
+      outline: 'border border-border bg-card hover:bg-muted/50 hover:border-border/80',
+      secondary: 'bg-muted text-card-foreground hover:bg-muted/80',
+      ghost: 'text-foreground hover:bg-muted/50',
+      link: 'text-primary-600 underline-offset-4 hover:underline dark:text-primary-400',
+      success: 'bg-success-600 text-white hover:bg-success-700 shadow-sm hover:shadow-md',
     };
 
     const sizes = {
-      default: 'h-10 px-4 py-2',
-      sm: 'h-9 rounded-md px-3',
-      lg: 'h-11 rounded-lg px-8',
+      default: 'h-10 px-4 py-2 text-sm gap-2',
+      sm: 'h-9 rounded-md px-3 text-sm gap-1.5',
+      lg: 'h-11 rounded-lg px-6 text-base gap-2',
       icon: 'h-10 w-10',
     };
 
@@ -42,7 +43,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {isLoading && (
           <svg
-            className="mr-2 h-4 w-4 animate-spin"
+            className="h-4 w-4 animate-spin"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"

@@ -65,6 +65,7 @@ describe('RLS Policies', () => {
           icon: null,
           color: null,
           parentId: null,
+          isActive: true,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -76,6 +77,7 @@ describe('RLS Policies', () => {
           icon: null,
           color: null,
           parentId: null,
+          isActive: true,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -101,6 +103,7 @@ describe('RLS Policies', () => {
         icon: null,
         color: null,
         parentId: null,
+        isActive: true,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
@@ -121,6 +124,7 @@ describe('RLS Policies', () => {
         icon: null,
         color: null,
         parentId: null,
+        isActive: true,
         createdAt: new Date(),
         updatedAt: new Date(),
       });

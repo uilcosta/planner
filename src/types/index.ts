@@ -112,6 +112,54 @@ export interface UpcomingBill {
 }
 
 /**
+ * Dashboard Page Data Types
+ * These match the exact structure expected by the dashboard page component
+ */
+export interface DashboardKPIs {
+  available: number;
+  inCaixinhas: number;
+  monthIncome: number;
+  monthExpense: number;
+  prevMonthIncome: number;
+  prevMonthExpense: number;
+  hasComparison: boolean;
+}
+
+export interface WeekData {
+  week: number;
+  label: string;
+  startDate: Date;
+  endDate: Date;
+  income: number;
+  expense: number;
+}
+
+export interface BudgetData {
+  budget: number;
+  spent: number;
+  status: 'normal' | 'warning' | 'limit' | 'over' | 'none';
+  topCategories: Array<{ name: string; percentage: number; color: string }>;
+}
+
+export interface DashboardTransaction {
+  id: string;
+  description: string;
+  amount: number;
+  type: 'INCOME' | 'EXPENSE' | 'TRANSFER';
+  category?: { name: string; icon?: string } | null;
+  account?: { name: string } | null;
+  date: string | Date;
+  status: 'PENDING' | 'COMPLETED' | 'CANCELLED';
+}
+
+export interface DashboardData {
+  kpis: DashboardKPIs;
+  cashFlow: WeekData[];
+  budget: BudgetData;
+  recentTransactions: DashboardTransaction[];
+}
+
+/**
  * Form types
  */
 export interface MonthYearSelection {

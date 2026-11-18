@@ -37,6 +37,9 @@ export async function middleware(request: NextRequest) {
   // Protected routes that require authentication
   const protectedPaths = [
     '/',
+    '/categorias',
+    '/instituicoes',
+    '/contas',
     '/planejamento',
     '/controle',
     '/caixinhas',

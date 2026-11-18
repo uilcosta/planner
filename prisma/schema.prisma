@@ -59,6 +59,7 @@ model Category {
   children    Category[] @relation("CategoryHierarchy")
   userId      String
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isActive    Boolean   @default(true)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -74,8 +75,10 @@ model Institution {
   name      String
   type      InstitutionType // BANK | CREDIT_CARD | INVESTMENT | OTHER
   color     String?
+  logoUrl   String?
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

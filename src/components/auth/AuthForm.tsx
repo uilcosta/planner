@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, FieldErrors } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signInSchema, type SignInInput, signUpSchema, type SignUpInput } from '@/lib/validators';
 import { cn } from '@/lib/utils';
@@ -10,6 +10,16 @@ import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
 import { Alert } from '@/components/ui/Alert';
 
+interface AuthFormField {
+  name: 'name' | 'email' | 'password';
+  label: string;
+  type: 'text' | 'email' | 'password';
+  icon?: React.ComponentType<{ className?: string }>;
+  placeholder?: string;
+  autoComplete?: string;
+  required?: boolean;
+}
+
 interface AuthFormProps {
   mode: 'signIn' | 'signUp';
   action: (data: SignInInput | SignUpInput) => Promise<{ success: boolean; error?: string }>;
@@ -17,9 +27,22 @@ interface AuthFormProps {
   onSwitchMode?: () => void;
   switchModeText?: string;
   switchModeLinkText?: string;
+  customFields?: AuthFormField[];
 }
 
 type FormData = SignInInput | SignUpInput;
+
+function getFieldError(errors: FieldErrors<FormData>, field: 'name' | 'email' | 'password') {
+  const fieldErrors = (errors as Record<string, unknown>)[field];
+  if (fieldErrors && typeof fieldErrors === 'object' && 'message' in fieldErrors) {
+    return (fieldErrors as { message: string }).message;
+  }
+  return undefined;
+}
+
+function hasFieldError(errors: FieldErrors<FormData>, field: 'name' | 'email' | 'password') {
+  return !!(errors as Record<string, unknown>)[field];
+}
 
 export function AuthForm({
   mode,
@@ -28,6 +51,7 @@ export function AuthForm({
   onSwitchMode,
   switchModeText,
   switchModeLinkText,
+  customFields = [],
 }: AuthFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -68,97 +92,57 @@ export function AuthForm({
     }
   };
 
-  const getErrorMessage = (field: 'email' | 'password' | 'name') => {
-    const fieldErrors = errors[field as keyof typeof errors];
-    if (fieldErrors && typeof fieldErrors === 'object' && 'message' in fieldErrors) {
-      return (fieldErrors as { message: string }).message;
-    }
-    return undefined;
-  };
-
-  const hasError = (field: 'email' | 'password' | 'name') => {
-    return !!errors[field as keyof typeof errors];
-  };
+  const fieldsToRender = customFields.length > 0
+    ? customFields
+    : isSignUp
+      ? [
+          { name: 'name' as const, label: 'Nome', type: 'text' as const, placeholder: 'Seu nome', autoComplete: 'name', required: true },
+          { name: 'email' as const, label: 'E-mail', type: 'email' as const, placeholder: 'seu@email.com', autoComplete: 'email', required: true },
+          { name: 'password' as const, label: 'Senha', type: 'password' as const, placeholder: '••••••••', autoComplete: 'new-password', required: true },
+        ]
+      : [
+          { name: 'email' as const, label: 'E-mail', type: 'email' as const, placeholder: 'seu@email.com', autoComplete: 'email', required: true },
+          { name: 'password' as const, label: 'Senha', type: 'password' as const, placeholder: '••••••••', autoComplete: 'current-password', required: true },
+        ];
 
   return (
-    <div className="mx-auto w-full max-w-md">
-      <div className="mb-8 text-center">
-        <h1 className="text-2xl font-bold text-gray-900">{isSignUp ? 'Criar conta' : 'Entrar'}</h1>
-        <p className="mt-2 text-gray-600">
-          {isSignUp
-            ? 'Preencha os dados para criar sua conta'
-            : 'Digite suas credenciais para acessar'}
-        </p>
-      </div>
-
+    <div className="w-full">
       {error && (
         <Alert variant="destructive" className="mb-6" onClose={() => setError(null)}>
           {error}
         </Alert>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-        {isSignUp && (
-          <div>
-            <Label htmlFor="name" required>
-              Nome
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
+        {fieldsToRender.map((field) => (
+          <div key={field.name}>
+            <Label htmlFor={field.name} required={field.required}>
+              {field.label}
             </Label>
-            <Input
-              id="name"
-              type="text"
-              placeholder="Seu nome"
-              autoComplete="name"
-              {...register('name')}
-              className={cn(
-                hasError('name') && 'border-red-500 focus:border-red-500 focus:ring-red-500'
+            <div className="relative">
+              {field.icon && (
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none">
+                  <field.icon className="h-5 w-5" aria-hidden="true" />
+                </div>
               )}
-              disabled={isLoading}
-            />
-            {getErrorMessage('name') && (
-              <p className="mt-1 text-sm text-red-500">{getErrorMessage('name')}</p>
+              <Input
+                id={field.name}
+                type={field.type}
+                placeholder={field.placeholder}
+                autoComplete={field.autoComplete}
+                {...register(field.name)}
+                error={hasFieldError(errors, field.name)}
+                disabled={isLoading}
+                className={field.icon ? 'pl-10' : undefined}
+              />
+            </div>
+            {getFieldError(errors, field.name) && (
+              <p className="mt-1.5 text-sm text-danger-600 dark:text-danger-500" role="alert">
+                {getFieldError(errors, field.name)}
+              </p>
             )}
           </div>
-        )}
-
-        <div>
-          <Label htmlFor="email" required>
-            E-mail
-          </Label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="seu@email.com"
-            autoComplete="email"
-            {...register('email')}
-            className={cn(
-              hasError('email') && 'border-red-500 focus:border-red-500 focus:ring-red-500'
-            )}
-            disabled={isLoading}
-          />
-          {getErrorMessage('email') && (
-            <p className="mt-1 text-sm text-red-500">{getErrorMessage('email')}</p>
-          )}
-        </div>
-
-        <div>
-          <Label htmlFor="password" required>
-            Senha
-          </Label>
-          <Input
-            id="password"
-            type="password"
-            placeholder="••••••••"
-            autoComplete={isSignUp ? 'new-password' : 'current-password'}
-            {...register('password')}
-            className={cn(
-              hasError('password') && 'border-red-500 focus:border-red-500 focus:ring-red-500'
-            )}
-            disabled={isLoading}
-          />
-          {getErrorMessage('password') && (
-            <p className="mt-1 text-sm text-red-500">{getErrorMessage('password')}</p>
-          )}
-        </div>
+        ))}
 
         <Button type="submit" className="w-full" size="lg" isLoading={isLoading}>
           {isSignUp ? 'Criar conta' : 'Entrar'}
@@ -166,12 +150,12 @@ export function AuthForm({
       </form>
 
       {onSwitchMode && switchModeText && switchModeLinkText && (
-        <p className="mt-6 text-center text-gray-600">
+        <p className="mt-6 text-center text-sm text-muted-foreground">
           {switchModeText}{' '}
           <button
             type="button"
             onClick={onSwitchMode}
-            className="text-primary-600 hover:text-primary-500 font-medium underline"
+            className="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 font-medium underline"
           >
             {switchModeLinkText}
           </button>

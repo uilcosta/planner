@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { getDaysInMonth, adjustDayOfMonth } from './utils';
 
 /**
  * Base schemas for common fields
@@ -21,7 +22,7 @@ const dayOfMonthSchema = z.number().int().min(1).max(31).nullable().optional();
 /**
  * Category schemas
  */
-export const createCategorySchema = z.object({
+const categoryBaseSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório').max(100),
   icon: z.string().max(50).optional(),
   color: z
@@ -32,7 +33,8 @@ export const createCategorySchema = z.object({
   parentId: z.string().cuid().nullable().optional(),
 });
 
-export const updateCategorySchema = createCategorySchema.partial();
+export const createCategorySchema = categoryBaseSchema;
+export const updateCategorySchema = categoryBaseSchema.partial();
 
 export type CreateCategoryInput = z.infer<typeof createCategorySchema>;
 export type UpdateCategoryInput = z.infer<typeof updateCategorySchema>;
@@ -40,16 +42,23 @@ export type UpdateCategoryInput = z.infer<typeof updateCategorySchema>;
 /**
  * Institution schemas
  */
-export const createInstitutionSchema = z.object({
+const institutionBaseSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório').max(100),
   type: z.enum(['BANK', 'CREDIT_CARD', 'INVESTMENT', 'OTHER']),
   color: z
     .string()
     .regex(/^#[0-9A-Fa-f]{6}$/, 'Cor deve ser um hex válido')
     .optional(),
+  logoUrl: z
+    .string()
+    .regex(/^https?:\/\/.+/, 'URL do logo deve usar protocolo http ou https')
+    .or(z.literal(''))
+    .nullable()
+    .optional(),
 });
 
-export const updateInstitutionSchema = createInstitutionSchema.partial();
+export const createInstitutionSchema = institutionBaseSchema;
+export const updateInstitutionSchema = institutionBaseSchema.partial();
 
 export type CreateInstitutionInput = z.infer<typeof createInstitutionSchema>;
 export type UpdateInstitutionInput = z.infer<typeof updateInstitutionSchema>;
@@ -57,7 +66,7 @@ export type UpdateInstitutionInput = z.infer<typeof updateInstitutionSchema>;
 /**
  * Account schemas
  */
-export const createAccountSchema = z.object({
+const accountBaseSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório').max(100),
   type: z.enum(['CHECKING', 'SAVINGS', 'CREDIT_CARD', 'INVESTMENT', 'CASH']),
   institutionId: z.string().cuid('Instituição inválida'),
@@ -68,7 +77,26 @@ export const createAccountSchema = z.object({
   isActive: z.boolean().default(true),
 });
 
-export const updateAccountSchema = createAccountSchema.partial();
+export const createAccountSchema = accountBaseSchema
+  .refine((data) => {
+    if (data.type === 'CREDIT_CARD') {
+      if (data.creditLimit !== undefined && data.creditLimit !== null && data.creditLimit <= 0) {
+        return false;
+      }
+      if (data.closingDay !== undefined && data.closingDay !== null && (data.closingDay < 1 || data.closingDay > 31)) {
+        return false;
+      }
+      if (data.dueDay !== undefined && data.dueDay !== null && (data.dueDay < 1 || data.dueDay > 31)) {
+        return false;
+      }
+    }
+    return true;
+  }, {
+    message: 'Para cartões de crédito: limite deve ser > 0, dia de fechamento e vencimento entre 1-31',
+    path: ['creditLimit'],
+  });
+
+export const updateAccountSchema = accountBaseSchema.partial();
 
 export type CreateAccountInput = z.infer<typeof createAccountSchema>;
 export type UpdateAccountInput = z.infer<typeof updateAccountSchema>;
@@ -76,7 +104,7 @@ export type UpdateAccountInput = z.infer<typeof updateAccountSchema>;
 /**
  * PlannedItem schemas
  */
-export const createPlannedItemSchema = z.object({
+const basePlannedItemSchema = z.object({
   description: z.string().min(1, 'Descrição é obrigatória').max(200),
   amount: currencySchema,
   type: z.enum(['INCOME', 'EXPENSE']),
@@ -89,7 +117,48 @@ export const createPlannedItemSchema = z.object({
   isActive: z.boolean().default(true),
 });
 
-export const updatePlannedItemSchema = createPlannedItemSchema.partial();
+const plannedItemCreateSchema = basePlannedItemSchema
+  .refine((data) => {
+    if (data.recurrence !== 'ONE_TIME' && !data.dayOfMonth) {
+      return false;
+    }
+    return true;
+  }, {
+    message: 'Dia do mês é obrigatório para itens recorrentes',
+    path: ['dayOfMonth'],
+  })
+  .refine((data) => {
+    if (data.recurrence === 'CUSTOM' && !data.recurrenceEndDate) {
+      return false;
+    }
+    return true;
+  }, {
+    message: 'Data de fim da recorrência é obrigatória para recorrência personalizada',
+    path: ['recurrenceEndDate'],
+  });
+
+const plannedItemUpdateSchema = basePlannedItemSchema.partial()
+  .refine((data) => {
+    if (data.recurrence && data.recurrence !== 'ONE_TIME' && !data.dayOfMonth) {
+      return false;
+    }
+    return true;
+  }, {
+    message: 'Dia do mês é obrigatório para itens recorrentes',
+    path: ['dayOfMonth'],
+  })
+  .refine((data) => {
+    if (data.recurrence === 'CUSTOM' && !data.recurrenceEndDate) {
+      return false;
+    }
+    return true;
+  }, {
+    message: 'Data de fim da recorrência é obrigatória para recorrência personalizada',
+    path: ['recurrenceEndDate'],
+  });
+
+export const createPlannedItemSchema = plannedItemCreateSchema;
+export const updatePlannedItemSchema = plannedItemUpdateSchema;
 
 export type CreatePlannedItemInput = z.infer<typeof createPlannedItemSchema>;
 export type UpdatePlannedItemInput = z.infer<typeof updatePlannedItemSchema>;
@@ -97,7 +166,7 @@ export type UpdatePlannedItemInput = z.infer<typeof updatePlannedItemSchema>;
 /**
  * Transaction schemas
  */
-export const createTransactionSchema = z.object({
+const transactionBaseSchema = z.object({
   description: z.string().min(1, 'Descrição é obrigatória').max(200),
   amount: currencySchema,
   type: z.enum(['INCOME', 'EXPENSE', 'TRANSFER']),
@@ -113,7 +182,8 @@ export const createTransactionSchema = z.object({
   notes: z.string().max(500).optional(),
 });
 
-export const updateTransactionSchema = createTransactionSchema.partial();
+export const createTransactionSchema = transactionBaseSchema;
+export const updateTransactionSchema = transactionBaseSchema.partial();
 
 export type CreateTransactionInput = z.infer<typeof createTransactionSchema>;
 export type UpdateTransactionInput = z.infer<typeof updateTransactionSchema>;
@@ -121,7 +191,7 @@ export type UpdateTransactionInput = z.infer<typeof updateTransactionSchema>;
 /**
  * Caixinha schemas
  */
-export const createCaixinhaSchema = z.object({
+const caixinhaBaseSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório').max(100),
   description: z.string().max(500).optional(),
   icon: z.string().max(50).optional(),
@@ -136,7 +206,8 @@ export const createCaixinhaSchema = z.object({
   isActive: z.boolean().default(true),
 });
 
-export const updateCaixinhaSchema = createCaixinhaSchema.partial();
+export const createCaixinhaSchema = caixinhaBaseSchema;
+export const updateCaixinhaSchema = caixinhaBaseSchema.partial();
 
 export type CreateCaixinhaInput = z.infer<typeof createCaixinhaSchema>;
 export type UpdateCaixinhaInput = z.infer<typeof updateCaixinhaSchema>;
@@ -181,3 +252,45 @@ export const signInSchema = z.object({
 
 export type SignUpInput = z.infer<typeof signUpSchema>;
 export type SignInInput = z.infer<typeof signInSchema>;
+
+/**
+ * Validation helper functions
+ */
+
+export function validateAndAdjustDayOfMonth(
+  dayOfMonth: number | null | undefined,
+  year: number,
+  month: number
+): { adjustedDay: number | null; wasAdjusted: boolean; maxDay: number } {
+  if (!dayOfMonth) return { adjustedDay: null, wasAdjusted: false, maxDay: getDaysInMonth(year, month) };
+
+  const maxDay = getDaysInMonth(year, month);
+  const adjustedDay = adjustDayOfMonth(dayOfMonth, year, month);
+  return {
+    adjustedDay,
+    wasAdjusted: adjustedDay !== dayOfMonth,
+    maxDay,
+  };
+}
+
+export function generateDayOfMonthPreview(
+  dayOfMonth: number,
+  year: number
+): Array<{ month: number; monthName: string; adjustedDay: number; wasAdjusted: boolean }> {
+  const months = [
+    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro',
+  ];
+
+  return Array.from({ length: 12 }, (_, i) => {
+    const month = i + 1;
+    const maxDay = getDaysInMonth(year, month);
+    const adjustedDay = adjustDayOfMonth(dayOfMonth, year, month);
+    return {
+      month,
+      monthName: months[i],
+      adjustedDay,
+      wasAdjusted: adjustedDay !== dayOfMonth,
+    };
+  });
+}
