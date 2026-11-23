@@ -116,7 +116,7 @@ export function KPICard({ title, value, variant, description, trend, action, cla
         )}
       </header>
 
-      <div className="text-3xl font-semibold tabular-nums" style={{ color: 'var(--color-text)' }}>
+      <div className="text-3xl font-bold tabular-nums" style={{ color: 'var(--color-text)' }}>
         <span className={cn(styles.valueColor, 'font-mono')}>
           {displayValue}
         </span>

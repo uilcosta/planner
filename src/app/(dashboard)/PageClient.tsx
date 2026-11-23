@@ -7,9 +7,10 @@ import { CashFlowChart } from '@/components/charts/CashFlowChart';
 import { BudgetProgress } from '@/components/charts/BudgetProgress';
 import { RecentActivity } from '@/components/dashboard/RecentActivity';
 import { Button } from '@/components/ui/Button';
+import { MonthPicker } from '@/components/ui/MonthPicker';
+import { HideValuesToggle } from '@/components/ui/HideValuesToggle';
 import { Plus, AlertCircle } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
-import { cn } from '@/lib/utils';
 import { getDashboardData } from '@/app/actions/dashboard';
 import type { DashboardKPIs, WeekData, BudgetData, DashboardTransaction } from '@/types';
 
@@ -90,10 +91,6 @@ export default function DashboardPage() {
     router.push(`/planejamento?month=${currentMonth + 1}&year=${currentYear}`);
   };
 
-  const handleViewCashFlowData = () => {
-    router.push(`/lancamentos?month=${currentMonth + 1}&year=${currentYear}&view=cashflow`);
-  };
-
   const monthNames = [
     'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro',
@@ -110,7 +107,7 @@ export default function DashboardPage() {
   if (isLoading) {
     return (
       <div className="space-y-6 animate-fade-in">
-        <div className="flex items-center justify-between">
+        <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-text">Dashboard</h1>
             <p className="text-text-muted mt-1">Visão geral das suas finanças</p>
@@ -119,7 +116,7 @@ export default function DashboardPage() {
             <Plus className="h-4 w-4 mr-2" />
             Novo lançamento
           </Button>
-        </div>
+        </header>
 
         {/* Skeleton KPIs */}
         <div className="kpi-grid">
@@ -142,6 +139,18 @@ export default function DashboardPage() {
   if (error) {
     return (
       <div className="space-y-6 animate-fade-in">
+        <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-text">Dashboard</h1>
+            <p className="text-text-muted mt-1">
+              {monthNames[currentMonth]} {currentYear} — Resumo financeiro
+            </p>
+          </div>
+          <Button onClick={handleNewLaunch} className="w-full sm:w-auto">
+            <Plus className="h-4 w-4 mr-2" />
+            Novo lançamento
+          </Button>
+        </header>
         <div className="card p-8 text-center">
           <AlertCircle className="h-12 w-12 mx-auto text-negative mb-4" />
           <h2 className="text-lg font-semibold text-text mb-2">Erro ao carregar</h2>
@@ -154,21 +163,39 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      {/* Header */}
+      {/* Header per DESIGN.md §3.1 */}
       <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-text">Dashboard</h1>
-          <p className="text-text-muted mt-1">
-            {monthNames[currentMonth]} {currentYear} — Resumo financeiro
-          </p>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full sm:w-auto">
+          <div>
+            <h1 className="text-2xl font-bold text-text">Dashboard</h1>
+            <p className="text-text-muted mt-1">
+              {monthNames[currentMonth]} {currentYear} — Resumo financeiro
+            </p>
+          </div>
+          <MonthPicker
+            month={currentMonth}
+            year={currentYear}
+            onChange={(month, year) => {
+              setCurrentMonth(month);
+              setCurrentYear(year);
+            }}
+            onGoToCurrent={() => {
+              const now = new Date();
+              setCurrentMonth(now.getMonth());
+              setCurrentYear(now.getFullYear());
+            }}
+          />
         </div>
-        <Button onClick={handleNewLaunch} className="w-full sm:w-auto">
-          <Plus className="h-4 w-4 mr-2" />
-          Novo lançamento
-        </Button>
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <HideValuesToggle />
+          <Button onClick={handleNewLaunch} className="w-full sm:w-auto">
+            <Plus className="h-4 w-4 mr-2" />
+            Novo lançamento
+          </Button>
+        </div>
       </header>
 
-      {/* KPIs Grid */}
+      {/* KPIs Grid - Responsive per DESIGN.md §3.2 */}
       <div className="kpi-grid" role="region" aria-label="Indicadores financeiros">
         <KPICard
           title="Disponível"
@@ -205,7 +232,7 @@ export default function DashboardPage() {
         />
       </div>
 
-      {/* Main Content Grid */}
+      {/* Main Content Grid - Fluxo de Caixa (2/3) + Planejamento (1/3) at ≥1200px per DESIGN.md §3.3 */}
       <div className="dashboard-grid">
         {/* Fluxo de Caixa - 2/3 width */}
         <section aria-labelledby="cashflow-title">
@@ -227,8 +254,8 @@ export default function DashboardPage() {
         </section>
       </div>
 
-      {/* Atividade Recente */}
-      <section aria-labelledby="activity-title">
+      {/* Atividade Recente - Full width at ≥1200px per DESIGN.md §3.4 */}
+      <section aria-labelledby="activity-title" className="w-full">
         <RecentActivity
           transactions={recentTransactions}
           onViewAll={handleViewAllTransactions}
