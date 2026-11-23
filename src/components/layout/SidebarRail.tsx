@@ -15,7 +15,6 @@ import {
   Settings,
   Menu,
   ChevronRight,
-  Plus,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 
@@ -43,37 +42,51 @@ export function SidebarRail({ onOpenDrawer }: SidebarRailProps) {
 
   return (
     <aside
-      className="hidden md:block fixed top-0 left-0 z-50 h-screen w-16 bg-sidebar-bg border-r border-sidebar-border flex flex-col transition-all duration-300"
+      className="bg-sidebar-bg border-sidebar-border fixed top-0 left-0 z-50 flex hidden h-screen w-18 flex-col border-r transition-all duration-300 md:block"
       aria-label="Menu lateral compacto"
       style={{ height: '100vh' }}
     >
       {/* Logo compacto */}
-      <Link href="/" className="flex h-16 items-center justify-center border-b border-sidebar-border" aria-label="Meu Planner Financeiro - Início">
-        <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-primary to-primary-hover flex items-center justify-center shadow-lg shadow-primary/25">
-          <Wallet className="h-5 w-5 text-on-primary" aria-hidden="true" />
+      <Link
+        href="/"
+        className="border-sidebar-border flex h-16 items-center justify-center border-b"
+        aria-label="Meu Planner Financeiro - Início"
+      >
+        <div className="from-primary to-primary-hover shadow-primary/25 flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br shadow-lg">
+          <Wallet className="text-on-primary h-5 w-5" aria-hidden="true" />
         </div>
       </Link>
 
       {/* Navigation rail */}
-      <nav className="flex-1 overflow-y-auto px-2 py-4 space-y-1 min-h-0" aria-label="Navegação principal">
+      <nav
+        className="min-h-0 flex-1 space-y-1 overflow-y-auto px-2 py-4"
+        aria-label="Navegação principal"
+      >
         {mainNavigation.map((item) => {
-          const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+          const isActive =
+            pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
           const Icon = item.icon;
           return (
             <Link
               key={item.name}
               href={item.href}
               className={cn(
-                'flex flex-col items-center gap-1 px-2 py-2.5 rounded-lg text-xs font-medium transition-all duration-200',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar-bg',
+                'flex flex-col items-center gap-1 rounded-lg px-2 py-2.5 text-xs font-medium transition-all duration-200',
+                'focus-visible:ring-primary focus-visible:ring-offset-sidebar-bg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
                 isActive
-                  ? 'bg-sidebar-active border border-sidebar-active-border text-sidebar-icon-active shadow-sm'
+                  ? 'bg-sidebar-active border-sidebar-active-border text-sidebar-icon-active border shadow-sm'
                   : 'text-sidebar-text-muted hover:bg-sidebar-hover hover:text-sidebar-text'
               )}
               aria-current={isActive ? 'page' : undefined}
               aria-label={item.name}
             >
-              <Icon className={cn('h-5 w-5 flex-shrink-0 transition-colors', isActive ? 'text-sidebar-icon-active' : 'text-sidebar-icon')} aria-hidden="true" />
+              <Icon
+                className={cn(
+                  'h-5 w-5 flex-shrink-0 transition-colors',
+                  isActive ? 'text-sidebar-icon-active' : 'text-sidebar-icon'
+                )}
+                aria-hidden="true"
+              />
               <span className="hidden">{item.name}</span>
             </Link>
           );
@@ -84,26 +97,32 @@ export function SidebarRail({ onOpenDrawer }: SidebarRailProps) {
           type="button"
           onClick={() => setMoreOpen(!moreOpen)}
           className={cn(
-            'flex flex-col items-center gap-1 px-2 py-2.5 rounded-lg text-xs font-medium transition-all duration-200',
-            'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar-bg',
-            moreOpen ? 'bg-sidebar-active text-sidebar-icon-active' : 'text-sidebar-text-muted hover:bg-sidebar-hover hover:text-sidebar-text'
+            'flex flex-col items-center gap-1 rounded-lg px-2 py-2.5 text-xs font-medium transition-all duration-200',
+            'focus-visible:ring-primary focus-visible:ring-offset-sidebar-bg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+            moreOpen
+              ? 'bg-sidebar-active text-sidebar-icon-active'
+              : 'text-sidebar-text-muted hover:bg-sidebar-hover hover:text-sidebar-text'
           )}
           aria-label={moreOpen ? 'Fechar mais opções' : 'Abrir mais opções'}
           aria-expanded={moreOpen}
         >
-          <Settings className="h-5 w-5 flex-shrink-0 transition-transform duration-200" style={{ transform: moreOpen ? 'rotate(90deg)' : 'none' }} aria-hidden="true" />
+          <Settings
+            className="h-5 w-5 flex-shrink-0 transition-transform duration-200"
+            style={{ transform: moreOpen ? 'rotate(90deg)' : 'none' }}
+            aria-hidden="true"
+          />
           <span className="hidden">Mais</span>
         </button>
       </nav>
 
       {/* Bottom: Menu button to open drawer */}
-      <div className="p-2 border-t border-sidebar-border shrink-0">
+      <div className="border-sidebar-border shrink-0 border-t p-2">
         <Button
           variant="ghost"
           size="icon"
           onClick={onOpenDrawer}
           aria-label="Abrir menu completo"
-          className="w-full h-10 rounded-lg"
+          className="h-10 w-full rounded-lg"
         >
           <Menu className="h-5 w-5" aria-hidden="true" />
         </Button>
@@ -111,35 +130,42 @@ export function SidebarRail({ onOpenDrawer }: SidebarRailProps) {
 
       {/* Mais dropdown popover */}
       {moreOpen && (
-        <div className="absolute left-full top-0 z-50 w-56 bg-sidebar-bg border border-sidebar-border rounded-r-xl shadow-xl h-screen animate-slide-up">
-          <div className="flex h-16 items-center justify-between px-4 border-b border-sidebar-border">
-            <span className="font-semibold text-sidebar-text">Mais opções</span>
+        <div className="bg-sidebar-bg border-sidebar-border animate-slide-up absolute top-0 left-full z-50 h-screen w-56 rounded-r-xl border shadow-xl">
+          <div className="border-sidebar-border flex h-16 items-center justify-between border-b px-4">
+            <span className="text-sidebar-text font-semibold">Mais opções</span>
             <button
               type="button"
               onClick={() => setMoreOpen(false)}
-              className="p-1 rounded-lg text-sidebar-icon hover:text-sidebar-icon-active hover:bg-sidebar-hover"
+              className="text-sidebar-icon hover:text-sidebar-icon-active hover:bg-sidebar-hover rounded-lg p-1"
               aria-label="Fechar mais opções"
             >
               <ChevronRight className="h-5 w-5 rotate-90" />
             </button>
           </div>
-          <nav className="p-3 space-y-1" aria-label="Mais opções">
+          <nav className="space-y-1 p-3" aria-label="Mais opções">
             {moreNavigation.map((item) => {
-              const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+              const isActive =
+                pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
               const Icon = item.icon;
               return (
                 <Link
                   key={item.name}
                   href={item.href}
                   className={cn(
-                    'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all',
+                    'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all',
                     isActive
-                      ? 'bg-sidebar-active border border-sidebar-active-border text-sidebar-icon-active'
+                      ? 'bg-sidebar-active border-sidebar-active-border text-sidebar-icon-active border'
                       : 'text-sidebar-text-muted hover:bg-sidebar-hover hover:text-sidebar-text'
                   )}
                   aria-current={isActive ? 'page' : undefined}
                 >
-                  <Icon className={cn('h-5 w-5', isActive ? 'text-sidebar-icon-active' : 'text-sidebar-icon')} aria-hidden="true" />
+                  <Icon
+                    className={cn(
+                      'h-5 w-5',
+                      isActive ? 'text-sidebar-icon-active' : 'text-sidebar-icon'
+                    )}
+                    aria-hidden="true"
+                  />
                   <span>{item.name}</span>
                 </Link>
               );
