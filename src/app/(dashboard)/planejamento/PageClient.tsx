@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Alert } from '@/components/ui/Alert';
-import { Calendar, Plus, TrendingUp, TrendingDown, Minus, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MonthPicker } from '@/components/ui/MonthPicker';
+import { Calendar, Plus, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { getAllPlannedItems } from '@/app/actions/planned-items/getAll';
 import { createPlannedItem } from '@/app/actions/planned-items/create';
 import { updatePlannedItem } from '@/app/actions/planned-items/update';
@@ -12,11 +13,6 @@ import { deletePlannedItem } from '@/app/actions/planned-items/delete';
 import { getAllCategories } from '@/app/actions/categories/getAll';
 import type { PlannedItemWithCategory, Category } from '@/types';
 import { formatCurrency, cn } from '@/lib/utils';
-
-const monthNames = [
-  'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro',
-];
 
 export default function PlanejamentoPage() {
   const [plannedItems, setPlannedItems] = useState<PlannedItemWithCategory[]>([]);
@@ -41,11 +37,19 @@ export default function PlanejamentoPage() {
   const [formError, setFormError] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
 
-  // Initialize date on client side to avoid hydration mismatch
+  // Initialize from localStorage (shared with dashboard)
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMounted(true);
-    setCurrentMonth(new Date().getMonth());
-    setCurrentYear(new Date().getFullYear());
+    const savedMonth = localStorage.getItem('selectedMonth');
+    const savedYear = localStorage.getItem('selectedYear');
+    if (savedMonth && savedYear) {
+      setCurrentMonth(parseInt(savedMonth, 10));
+      setCurrentYear(parseInt(savedYear, 10));
+    } else {
+      setCurrentMonth(new Date().getMonth());
+      setCurrentYear(new Date().getFullYear());
+    }
   }, []);
 
   const loadData = async () => {
@@ -74,18 +78,9 @@ export default function PlanejamentoPage() {
   };
 
   useEffect(() => {
-    loadData();
-  }, []);
-
-  const handlePrevMonth = () => {
-    setCurrentMonth((prev) => (prev === 0 ? 11 : prev - 1));
-    if (currentMonth === 0) setCurrentYear((prev) => prev - 1);
-  };
-
-  const handleNextMonth = () => {
-    setCurrentMonth((prev) => (prev === 11 ? 0 : prev + 1));
-    if (currentMonth === 11) setCurrentYear((prev) => prev + 1);
-  };
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (isMounted) loadData();
+  }, [isMounted]);
 
   const filteredItems = plannedItems.filter(
     (item) => item.month === currentMonth + 1 && item.year === currentYear
@@ -191,28 +186,34 @@ export default function PlanejamentoPage() {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      {/* Page Header with Month Selector */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="animate-fade-in space-y-6">
+      {/* Page Header with Month Picker per DESIGN.md §4 */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">Planejamento</h1>
-          <p className="text-muted-foreground mt-1">Controle mensal de receitas e despesas planejadas</p>
+          <h1 className="text-text text-2xl font-bold">Planejamento</h1>
+          <p className="text-text-muted mt-1">Controle mensal de receitas e despesas planejadas</p>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2">
-            <Button variant="ghost" size="icon" onClick={handlePrevMonth} aria-label="Mês anterior">
-              <ChevronLeft className="h-5 w-5" />
-            </Button>
-            <span className="text-sm font-semibold text-card-foreground w-40 text-center">
-              {monthNames[currentMonth]} {currentYear}
-            </span>
-            <Button variant="ghost" size="icon" onClick={handleNextMonth} aria-label="Próximo mês">
-              <ChevronRight className="h-5 w-5" />
-            </Button>
-          </div>
-          <Button onClick={() => openForm()}>
-            <Plus className="h-4 w-4 mr-2" />
-            Novo Item
+        <div className="flex w-full flex-col items-start gap-3 sm:w-auto sm:flex-row sm:items-center">
+          <MonthPicker
+            month={currentMonth}
+            year={currentYear}
+            onChange={(month, year) => {
+              setCurrentMonth(month);
+              setCurrentYear(year);
+              localStorage.setItem('selectedMonth', String(month));
+              localStorage.setItem('selectedYear', String(year));
+            }}
+            onGoToCurrent={() => {
+              const now = new Date();
+              setCurrentMonth(now.getMonth());
+              setCurrentYear(now.getFullYear());
+              localStorage.setItem('selectedMonth', String(now.getMonth()));
+              localStorage.setItem('selectedYear', String(now.getFullYear()));
+            }}
+          />
+          <Button onClick={() => openForm()} className="w-full sm:w-auto">
+            <Plus className="mr-2 h-4 w-4" />
+            Definir orçamento
           </Button>
         </div>
       </div>
@@ -227,46 +228,56 @@ export default function PlanejamentoPage() {
       <div className="grid gap-4 md:grid-cols-3">
         <Card variant="glass">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Receitas Planejadas</CardTitle>
-            <div className="h-10 w-10 rounded-lg bg-success-100 dark:bg-success-900/30 flex items-center justify-center">
-              <TrendingUp className="h-5 w-5 text-success-600 dark:text-success-400" />
+            <CardTitle className="text-text-muted text-sm font-medium">
+              Receitas Planejadas
+            </CardTitle>
+            <div className="bg-positive-bg flex h-10 w-10 items-center justify-center rounded-lg">
+              <TrendingUp className="text-positive h-5 w-5" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-success-600 dark:text-success-400">
+            <div className="text-positive text-2xl font-bold">
               {formatCurrency(totalPlannedIncome)}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">{incomeItems.length} item{incomeItems.length !== 1 ? 'ns' : ''}</p>
+            <p className="text-text-muted mt-1 text-xs">
+              {incomeItems.length} item{incomeItems.length !== 1 ? 'ns' : ''}
+            </p>
           </CardContent>
         </Card>
 
         <Card variant="glass">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Despesas Planejadas</CardTitle>
-            <div className="h-10 w-10 rounded-lg bg-danger-100 dark:bg-danger-900/30 flex items-center justify-center">
-              <TrendingDown className="h-5 w-5 text-danger-600 dark:text-danger-400" />
+            <CardTitle className="text-text-muted text-sm font-medium">
+              Despesas Planejadas
+            </CardTitle>
+            <div className="bg-negative-bg flex h-10 w-10 items-center justify-center rounded-lg">
+              <TrendingDown className="text-negative h-5 w-5" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-danger-600 dark:text-danger-400">
+            <div className="text-negative text-2xl font-bold">
               {formatCurrency(totalPlannedExpense)}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">{expenseItems.length} item{expenseItems.length !== 1 ? 'ns' : ''}</p>
+            <p className="text-text-muted mt-1 text-xs">
+              {expenseItems.length} item{expenseItems.length !== 1 ? 'ns' : ''}
+            </p>
           </CardContent>
         </Card>
 
         <Card variant="glass">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Saldo Previsto</CardTitle>
-            <div className="h-10 w-10 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
-              <Calendar className="h-5 w-5 text-primary-600 dark:text-primary-400" />
+            <CardTitle className="text-text-muted text-sm font-medium">Saldo Previsto</CardTitle>
+            <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+              <Calendar className="text-primary h-5 w-5" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className={cn('text-2xl font-bold', balance >= 0 ? 'text-success-600 dark:text-success-400' : 'text-danger-600 dark:text-danger-400')}>
+            <div
+              className={cn('text-2xl font-bold', balance >= 0 ? 'text-positive' : 'text-negative')}
+            >
               {formatCurrency(balance)}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Receitas menos despesas</p>
+            <p className="text-text-muted mt-1 text-xs">Receitas menos despesas</p>
           </CardContent>
         </Card>
       </div>
@@ -282,15 +293,15 @@ export default function PlanejamentoPage() {
         <CardContent>
           {isLoading ? (
             <div className="flex items-center justify-center py-8">
-              <div className="h-8 w-8 animate-spin rounded-full border-3 border-primary-500 border-t-transparent" />
+              <div className="border-primary h-8 w-8 animate-spin rounded-full border-3 border-t-transparent" />
             </div>
           ) : filteredItems.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              <Calendar className="h-12 w-12 mx-auto text-muted-foreground/30 mb-4" />
-              <p className="font-medium text-card-foreground">Nenhum item planejado para este mês</p>
-              <p className="text-sm mt-1">Adicione receitas e despesas previstas</p>
+            <div className="text-text-muted py-8 text-center">
+              <Calendar className="text-text-muted/30 mx-auto mb-4 h-12 w-12" />
+              <p className="text-text font-medium">Nenhum item planejado para este mês</p>
+              <p className="mt-1 text-sm">Adicione receitas e despesas previstas</p>
               <Button onClick={() => openForm()} className="mt-4">
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="mr-2 h-4 w-4" />
                 Adicionar Item
               </Button>
             </div>
@@ -298,7 +309,7 @@ export default function PlanejamentoPage() {
             <div className="space-y-3">
               {incomeItems.length > 0 && (
                 <div>
-                  <h4 className="text-sm font-medium text-success-600 dark:text-success-400 mb-2 flex items-center gap-1">
+                  <h4 className="text-positive mb-2 flex items-center gap-1 text-sm font-medium">
                     <TrendingUp className="h-4 w-4" />
                     Receitas
                   </h4>
@@ -306,7 +317,7 @@ export default function PlanejamentoPage() {
                     {incomeItems.map((item) => (
                       <div
                         key={item.id}
-                        className="flex items-center justify-between p-3 rounded-lg bg-success-50 dark:bg-success-900/20 border border-success-100 dark:border-success-900/30"
+                        className="bg-positive/5 border-positive-border flex items-center justify-between rounded-lg border p-3"
                       >
                         <div className="flex items-center gap-3">
                           {item.category.icon && (
@@ -315,21 +326,34 @@ export default function PlanejamentoPage() {
                             </span>
                           )}
                           <div>
-                            <p className="font-medium text-card-foreground">{item.description}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {item.category.name} • {item.recurrence === 'MONTHLY' ? 'Mensal' : item.recurrence}
+                            <p className="text-text font-medium">{item.description}</p>
+                            <p className="text-text-muted text-xs">
+                              {item.category.name} •{' '}
+                              {item.recurrence === 'MONTHLY' ? 'Mensal' : item.recurrence}
                               {item.dayOfMonth && ` • Dia ${item.dayOfMonth}`}
                             </p>
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="font-mono font-medium text-success-600 dark:text-success-400">
+                          <span className="text-positive font-mono font-medium">
                             +{formatCurrency(Number(item.amount))}
                           </span>
-                          <Button variant="ghost" size="icon" onClick={() => openForm(item)} className="h-8 w-8">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => openForm(item)}
+                            className="h-8 w-8"
+                            aria-label="Editar item"
+                          >
                             <Plus className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" onClick={() => handleDelete(item.id)} className="h-8 w-8 text-danger-600 hover:bg-danger-50">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDelete(item.id)}
+                            className="text-negative hover:bg-negative/5 h-8 w-8"
+                            aria-label="Excluir item"
+                          >
                             <Minus className="h-4 w-4" />
                           </Button>
                         </div>
@@ -341,7 +365,7 @@ export default function PlanejamentoPage() {
 
               {expenseItems.length > 0 && (
                 <div className={cn(incomeItems.length > 0 ? 'mt-6' : '')}>
-                  <h4 className="text-sm font-medium text-danger-600 dark:text-danger-400 mb-2 flex items-center gap-1">
+                  <h4 className="text-negative mb-2 flex items-center gap-1 text-sm font-medium">
                     <TrendingDown className="h-4 w-4" />
                     Despesas
                   </h4>
@@ -349,7 +373,7 @@ export default function PlanejamentoPage() {
                     {expenseItems.map((item) => (
                       <div
                         key={item.id}
-                        className="flex items-center justify-between p-3 rounded-lg bg-danger-50 dark:bg-danger-900/20 border border-danger-100 dark:border-danger-900/30"
+                        className="bg-negative/5 border-negative-border flex items-center justify-between rounded-lg border p-3"
                       >
                         <div className="flex items-center gap-3">
                           {item.category.icon && (
@@ -358,21 +382,34 @@ export default function PlanejamentoPage() {
                             </span>
                           )}
                           <div>
-                            <p className="font-medium text-card-foreground">{item.description}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {item.category.name} • {item.recurrence === 'MONTHLY' ? 'Mensal' : item.recurrence}
+                            <p className="text-text font-medium">{item.description}</p>
+                            <p className="text-text-muted text-xs">
+                              {item.category.name} •{' '}
+                              {item.recurrence === 'MONTHLY' ? 'Mensal' : item.recurrence}
                               {item.dayOfMonth && ` • Dia ${item.dayOfMonth}`}
                             </p>
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="font-mono font-medium text-danger-600 dark:text-danger-400">
+                          <span className="text-negative font-mono font-medium">
                             -{formatCurrency(Number(item.amount))}
                           </span>
-                          <Button variant="ghost" size="icon" onClick={() => openForm(item)} className="h-8 w-8">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => openForm(item)}
+                            className="h-8 w-8"
+                            aria-label="Editar item"
+                          >
                             <Plus className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" onClick={() => handleDelete(item.id)} className="h-8 w-8 text-danger-600 hover:bg-danger-50">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDelete(item.id)}
+                            className="text-negative hover:bg-negative/5 h-8 w-8"
+                            aria-label="Excluir item"
+                          >
                             <Minus className="h-4 w-4" />
                           </Button>
                         </div>
@@ -386,10 +423,10 @@ export default function PlanejamentoPage() {
         </CardContent>
       </Card>
 
-      {/* Form Modal */}
+      {/* Form Modal per DESIGN.md §6 - max-width 560px desktop, full-screen mobile */}
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <Card className="w-full max-w-md max-h-[90vh] overflow-y-auto">
+          <Card className="max-h-[90vh] w-full max-w-[560px] overflow-y-auto">
             <CardHeader>
               <CardTitle>{editingItem ? 'Editar Item' : 'Novo Item Planejado'}</CardTitle>
             </CardHeader>
@@ -402,7 +439,7 @@ export default function PlanejamentoPage() {
                 )}
 
                 <div>
-                  <label htmlFor="description" className="block text-sm font-medium text-card-foreground mb-1">
+                  <label htmlFor="description" className="text-text mb-1 block text-sm font-medium">
                     Descrição *
                   </label>
                   <input
@@ -412,14 +449,14 @@ export default function PlanejamentoPage() {
                     value={formData.description}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 rounded-lg border border-input bg-background text-card-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="border-border bg-surface text-text placeholder:text-text-muted w-full rounded-lg border px-3 py-2 focus:ring-2 focus:ring-[var(--color-focus)] focus:outline-none"
                     placeholder="Ex: Salário, Aluguel, Supermercado"
                   />
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-2">
                   <div>
-                    <label htmlFor="amount" className="block text-sm font-medium text-card-foreground mb-1">
+                    <label htmlFor="amount" className="text-text mb-1 block text-sm font-medium">
                       Valor *
                     </label>
                     <input
@@ -431,12 +468,12 @@ export default function PlanejamentoPage() {
                       required
                       step="0.01"
                       min="0.01"
-                      className="w-full px-3 py-2 rounded-lg border border-input bg-background text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="border-border bg-surface text-text w-full rounded-lg border px-3 py-2 focus:ring-2 focus:ring-[var(--color-focus)] focus:outline-none"
                       placeholder="0,00"
                     />
                   </div>
                   <div>
-                    <label htmlFor="type" className="block text-sm font-medium text-card-foreground mb-1">
+                    <label htmlFor="type" className="text-text mb-1 block text-sm font-medium">
                       Tipo *
                     </label>
                     <select
@@ -445,7 +482,7 @@ export default function PlanejamentoPage() {
                       value={formData.type}
                       onChange={handleChange}
                       required
-                      className="w-full px-3 py-2 rounded-lg border border-input bg-background text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="border-border bg-surface text-text w-full rounded-lg border px-3 py-2 focus:ring-2 focus:ring-[var(--color-focus)] focus:outline-none"
                     >
                       <option value="INCOME">Receita</option>
                       <option value="EXPENSE">Despesa</option>
@@ -454,7 +491,7 @@ export default function PlanejamentoPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="categoryId" className="block text-sm font-medium text-card-foreground mb-1">
+                  <label htmlFor="categoryId" className="text-text mb-1 block text-sm font-medium">
                     Categoria *
                   </label>
                   <select
@@ -463,14 +500,15 @@ export default function PlanejamentoPage() {
                     value={formData.categoryId}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 rounded-lg border border-input bg-background text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="border-border bg-surface text-text w-full rounded-lg border px-3 py-2 focus:ring-2 focus:ring-[var(--color-focus)] focus:outline-none"
                   >
                     <option value="">Selecione uma categoria</option>
                     {categories
                       .filter((c) => c.type === formData.type)
                       .map((cat) => (
                         <option key={cat.id} value={cat.id}>
-                          {cat.icon ? `${cat.icon} ` : ''}{cat.name}
+                          {cat.icon ? `${cat.icon} ` : ''}
+                          {cat.name}
                         </option>
                       ))}
                   </select>
@@ -478,7 +516,10 @@ export default function PlanejamentoPage() {
 
                 <div className="grid gap-4 md:grid-cols-2">
                   <div>
-                    <label htmlFor="dayOfMonth" className="block text-sm font-medium text-card-foreground mb-1">
+                    <label
+                      htmlFor="dayOfMonth"
+                      className="text-text mb-1 block text-sm font-medium"
+                    >
                       Dia do Mês
                     </label>
                     <input
@@ -489,12 +530,15 @@ export default function PlanejamentoPage() {
                       onChange={handleChange}
                       min="1"
                       max="31"
-                      className="w-full px-3 py-2 rounded-lg border border-input bg-background text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="border-border bg-surface text-text w-full rounded-lg border px-3 py-2 focus:ring-2 focus:ring-[var(--color-focus)] focus:outline-none"
                       placeholder="Opcional"
                     />
                   </div>
                   <div>
-                    <label htmlFor="recurrence" className="block text-sm font-medium text-card-foreground mb-1">
+                    <label
+                      htmlFor="recurrence"
+                      className="text-text mb-1 block text-sm font-medium"
+                    >
                       Recorrência
                     </label>
                     <select
@@ -502,7 +546,7 @@ export default function PlanejamentoPage() {
                       name="recurrence"
                       value={formData.recurrence}
                       onChange={handleChange}
-                      className="w-full px-3 py-2 rounded-lg border border-input bg-background text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="border-border bg-surface text-text w-full rounded-lg border px-3 py-2 focus:ring-2 focus:ring-[var(--color-focus)] focus:outline-none"
                     >
                       <option value="MONTHLY">Mensal</option>
                       <option value="WEEKLY">Semanal</option>

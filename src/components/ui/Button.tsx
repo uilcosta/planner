@@ -15,16 +15,16 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none rounded-lg';
+      'inline-flex items-center justify-center font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-surface disabled:opacity-50 disabled:pointer-events-none rounded-lg';
 
     const variants = {
-      default: 'bg-primary-600 text-white hover:bg-primary-700 shadow-sm hover:shadow-md',
-      destructive: 'bg-danger-600 text-white hover:bg-danger-700 shadow-sm hover:shadow-md',
-      outline: 'border border-border bg-card hover:bg-muted/50 hover:border-border/80',
-      secondary: 'bg-muted text-card-foreground hover:bg-muted/80',
-      ghost: 'text-foreground hover:bg-muted/50',
-      link: 'text-primary-600 underline-offset-4 hover:underline dark:text-primary-400',
-      success: 'bg-success-600 text-white hover:bg-success-700 shadow-sm hover:shadow-md',
+      default: 'bg-primary text-on-primary hover:bg-primary-hover shadow-sm hover:shadow-md',
+      destructive: 'bg-negative text-on-negative hover:bg-negative-hover shadow-sm hover:shadow-md',
+      outline: 'border border-border bg-surface hover:bg-sidebar-hover',
+      secondary: 'bg-surface text-text hover:bg-sidebar-hover border border-border',
+      ghost: 'text-text hover:bg-sidebar-hover',
+      link: 'text-primary underline-offset-4 hover:underline',
+      success: 'bg-positive text-on-positive hover:bg-positive-hover shadow-sm hover:shadow-md',
     };
 
     const sizes = {

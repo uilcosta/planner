@@ -18,16 +18,17 @@ const ibmPlexSans = IBM_Plex_Sans({
 
 export const metadata: Metadata = {
   title: 'Meu Planner Financeiro',
-  description: 'Gerenciador financeiro pessoal com planejamento mensal, controle de gastos e caixinhas',
+  description:
+    'Gerenciador financeiro pessoal com planejamento mensal, controle de gastos e caixinhas',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className={`${geistMono.variable} ${ibmPlexSans.variable} h-full antialiased`} suppressHydrationWarning>
+    <html
+      lang="pt-BR"
+      className={`${geistMono.variable} ${ibmPlexSans.variable} h-full antialiased`}
+      suppressHydrationWarning
+    >
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -50,10 +51,15 @@ export default function RootLayout({
         />
       </head>
       <body className="flex min-h-full flex-col">
+        {/* Skip link for accessibility */}
+        <a
+          href="#main-content"
+          className="focus:bg-surface focus:text-text sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:ring-2 focus:ring-[var(--color-focus)] focus:ring-offset-2 focus:outline-none"
+        >
+          Pular para o conteúdo principal
+        </a>
         <ThemeProvider>
-          <HideValuesProvider>
-            {children}
-          </HideValuesProvider>
+          <HideValuesProvider>{children}</HideValuesProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -25,9 +25,11 @@ export default function DashboardPage() {
   const [currentMonth, setCurrentMonth] = useState(0);
   const [currentYear, setCurrentYear] = useState(0);
   const [isMounted, setIsMounted] = useState(false);
+  const [comparisonLabel, setComparisonLabel] = useState('vs mês anterior');
 
   // Initialize from localStorage
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMounted(true);
     const savedMonth = localStorage.getItem('selectedMonth');
     const savedYear = localStorage.getItem('selectedYear');
@@ -63,6 +65,18 @@ export default function DashboardPage() {
         setCashFlowData(data.cashFlow);
         setBudgetData(data.budget);
         setRecentTransactions(data.recentTransactions);
+
+        // Set comparison label based on month status
+        const now = new Date();
+        const currentMonthNum = now.getMonth() + 1;
+        const currentYearNum = now.getFullYear();
+        if (year > currentYearNum || (year === currentYearNum && month > currentMonthNum)) {
+          setComparisonLabel('Posição ainda indisponível');
+        } else if (year === currentYearNum && month === currentMonthNum) {
+          setComparisonLabel('vs mesmo período mês anterior');
+        } else {
+          setComparisonLabel('vs mês anterior');
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Erro ao carregar dashboard');
         console.error(err);
@@ -92,28 +106,61 @@ export default function DashboardPage() {
   };
 
   const monthNames = [
-    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro',
+    'Janeiro',
+    'Fevereiro',
+    'Março',
+    'Abril',
+    'Maio',
+    'Junho',
+    'Julho',
+    'Agosto',
+    'Setembro',
+    'Outubro',
+    'Novembro',
+    'Dezembro',
   ];
 
+  // Determine month status for subtitle
+  const now = new Date();
+  const currentMonthNum = now.getMonth() + 1;
+  const currentYearNum = now.getFullYear();
+  const selectedMonth = currentMonth + 1;
+  const selectedYear = currentYear;
+
+  let monthStatusLabel = 'Resumo financeiro';
+  if (
+    selectedYear > currentYearNum ||
+    (selectedYear === currentYearNum && selectedMonth > currentMonthNum)
+  ) {
+    monthStatusLabel = 'Mês futuro — Posição ainda indisponível';
+  } else if (selectedYear === currentYearNum && selectedMonth === currentMonthNum) {
+    monthStatusLabel = 'Mês atual — Posição até hoje';
+  } else {
+    monthStatusLabel = 'Mês encerrado — Posição no fechamento';
+  }
+
   // Calculate trends
-  const incomeTrend = kpis && kpis.prevMonthIncome > 0
-    ? ((kpis.monthIncome - kpis.prevMonthIncome) / kpis.prevMonthIncome) * 100
-    : 0;
-  const expenseTrend = kpis && kpis.prevMonthExpense > 0
-    ? ((kpis.monthExpense - kpis.prevMonthExpense) / kpis.prevMonthExpense) * 100
-    : 0;
+  const incomeTrend =
+    kpis && kpis.prevMonthIncome > 0
+      ? ((kpis.monthIncome - kpis.prevMonthIncome) / kpis.prevMonthIncome) * 100
+      : 0;
+  const expenseTrend =
+    kpis && kpis.prevMonthExpense > 0
+      ? ((kpis.monthExpense - kpis.prevMonthExpense) / kpis.prevMonthExpense) * 100
+      : 0;
 
   if (isLoading) {
     return (
-      <div className="space-y-6 animate-fade-in">
-        <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="animate-fade-in space-y-6">
+        <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-text">Dashboard</h1>
-            <p className="text-text-muted mt-1">Visão geral das suas finanças</p>
+            <h1 className="text-text text-2xl font-bold">Dashboard</h1>
+            <p className="text-text-muted mt-1">
+              {monthNames[currentMonth]} {currentYear} — {monthStatusLabel}
+            </p>
           </div>
           <Button onClick={handleNewLaunch}>
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="mr-2 h-4 w-4" />
             Novo lançamento
           </Button>
         </header>
@@ -121,39 +168,39 @@ export default function DashboardPage() {
         {/* Skeleton KPIs */}
         <div className="kpi-grid">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="card p-5 skeleton" style={{ height: '140px' }} />
+            <div key={i} className="card skeleton p-5" style={{ height: '140px' }} />
           ))}
         </div>
 
         {/* Skeleton Charts */}
         <div className="dashboard-grid">
-          <div className="card p-5 skeleton" style={{ height: '320px' }} />
-          <div className="card p-5 skeleton" style={{ height: '320px' }} />
+          <div className="card skeleton p-5" style={{ height: '320px' }} />
+          <div className="card skeleton p-5" style={{ height: '320px' }} />
         </div>
 
-        <div className="card p-8 skeleton" style={{ height: '200px' }} />
+        <div className="card skeleton p-8" style={{ height: '200px' }} />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="space-y-6 animate-fade-in">
-        <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="animate-fade-in space-y-6">
+        <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-text">Dashboard</h1>
+            <h1 className="text-text text-2xl font-bold">Dashboard</h1>
             <p className="text-text-muted mt-1">
-              {monthNames[currentMonth]} {currentYear} — Resumo financeiro
+              {monthNames[currentMonth]} {currentYear} — {monthStatusLabel}
             </p>
           </div>
           <Button onClick={handleNewLaunch} className="w-full sm:w-auto">
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="mr-2 h-4 w-4" />
             Novo lançamento
           </Button>
         </header>
         <div className="card p-8 text-center">
-          <AlertCircle className="h-12 w-12 mx-auto text-negative mb-4" />
-          <h2 className="text-lg font-semibold text-text mb-2">Erro ao carregar</h2>
+          <AlertCircle className="text-negative mx-auto mb-4 h-12 w-12" />
+          <h2 className="text-text mb-2 text-lg font-semibold">Erro ao carregar</h2>
           <p className="text-text-muted mb-4">{error}</p>
           <Button onClick={() => window.location.reload()}>Tentar novamente</Button>
         </div>
@@ -162,14 +209,14 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="animate-fade-in space-y-6">
       {/* Header per DESIGN.md §3.1 */}
-      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full sm:w-auto">
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex w-full flex-col gap-4 sm:w-auto sm:flex-row sm:items-center">
           <div>
-            <h1 className="text-2xl font-bold text-text">Dashboard</h1>
+            <h1 className="text-text text-2xl font-bold">Dashboard</h1>
             <p className="text-text-muted mt-1">
-              {monthNames[currentMonth]} {currentYear} — Resumo financeiro
+              {monthNames[currentMonth]} {currentYear} — {monthStatusLabel}
             </p>
           </div>
           <MonthPicker
@@ -186,10 +233,10 @@ export default function DashboardPage() {
             }}
           />
         </div>
-        <div className="flex items-center gap-3 w-full sm:w-auto">
+        <div className="flex w-full items-center gap-3 sm:w-auto">
           <HideValuesToggle />
           <Button onClick={handleNewLaunch} className="w-full sm:w-auto">
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="mr-2 h-4 w-4" />
             Novo lançamento
           </Button>
         </div>
@@ -217,18 +264,36 @@ export default function DashboardPage() {
           title="Entradas do mês"
           value={kpis?.monthIncome ?? 0}
           variant="income"
-          description={kpis?.hasComparison ? `Mês anterior: ${formatCurrency(kpis.prevMonthIncome)}` : 'Sem base de comparação'}
-          trend={kpis?.hasComparison ? { value: incomeTrend, label: 'vs mês anterior' } : null}
-          action={{ label: 'Ver entradas', onClick: () => router.push(`/lancamentos?type=income&month=${currentMonth + 1}&year=${currentYear}`) }}
+          description={
+            kpis?.hasComparison
+              ? `${comparisonLabel}: ${formatCurrency(kpis.prevMonthIncome)}`
+              : comparisonLabel
+          }
+          trend={kpis?.hasComparison ? { value: incomeTrend, label: comparisonLabel } : null}
+          action={{
+            label: 'Ver entradas',
+            onClick: () =>
+              router.push(`/lancamentos?type=income&month=${currentMonth + 1}&year=${currentYear}`),
+          }}
         />
 
         <KPICard
           title="Saídas do mês"
           value={kpis?.monthExpense ?? 0}
           variant="expense"
-          description={kpis?.hasComparison ? `Mês anterior: ${formatCurrency(kpis.prevMonthExpense)}` : 'Sem base de comparação'}
-          trend={kpis?.hasComparison ? { value: expenseTrend, label: 'vs mês anterior' } : null}
-          action={{ label: 'Ver saídas', onClick: () => router.push(`/lancamentos?type=expense&month=${currentMonth + 1}&year=${currentYear}`) }}
+          description={
+            kpis?.hasComparison
+              ? `${comparisonLabel}: ${formatCurrency(kpis.prevMonthExpense)}`
+              : comparisonLabel
+          }
+          trend={kpis?.hasComparison ? { value: expenseTrend, label: comparisonLabel } : null}
+          action={{
+            label: 'Ver saídas',
+            onClick: () =>
+              router.push(
+                `/lancamentos?type=expense&month=${currentMonth + 1}&year=${currentYear}`
+              ),
+          }}
         />
       </div>
 
@@ -236,10 +301,7 @@ export default function DashboardPage() {
       <div className="dashboard-grid">
         {/* Fluxo de Caixa - 2/3 width */}
         <section aria-labelledby="cashflow-title">
-          <CashFlowChart
-            data={cashFlowData}
-            className="h-[380px]"
-          />
+          <CashFlowChart data={cashFlowData} className="h-[380px]" />
         </section>
 
         {/* Planejamento - 1/3 width */}

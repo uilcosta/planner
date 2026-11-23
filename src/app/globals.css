@@ -3,36 +3,40 @@
 :root {
   /* ===== TOKENS SEMÂNTICOS - TEMA CLARO ===== */
   /* Base */
-  --background: #F5F7FB;
-  --surface: #FFFFFF;
+  --background: #f5f7fb;
+  --surface: #ffffff;
   --text: #101828;
   --text-muted: #475569;
-  --border: #DCE3EC;
-  --control-border: #64748B;
+  --border: #dce3ec;
+  --control-border: #64748b;
 
   /* Ações e Estados */
-  --primary: #1D4ED8;
-  --primary-hover: #1E40AF;
-  --on-primary: #FFFFFF;
+  --primary: #1d4ed8;
+  --primary-hover: #1e40af;
+  --on-primary: #ffffff;
 
   --positive: #047857;
-  --positive-bg: #ECFDF5;
-  --positive-border: #A7F3D0;
+  --positive-hover: #059669;
+  --positive-bg: #ecfdf5;
+  --positive-border: #a7f3d0;
+  --on-positive: #ffffff;
 
-  --negative: #B42318;
-  --negative-bg: #FEF2F2;
-  --negative-border: #FECACA;
+  --negative: #b42318;
+  --negative-hover: #991b1b;
+  --negative-bg: #fef2f2;
+  --negative-border: #fecaca;
+  --on-negative: #ffffff;
 
-  --warning: #92400E;
-  --warning-bg: #FFFAEB;
-  --warning-border: #FDE68A;
+  --warning: #92400e;
+  --warning-bg: #fffaeb;
+  --warning-border: #fde68a;
 
-  --transfer: #7C3AED;
-  --transfer-bg: #F5F3FF;
-  --transfer-border: #DDD6FE;
+  --transfer: #7c3aed;
+  --transfer-bg: #f5f3ff;
+  --transfer-border: #ddd6fe;
 
   /* Foco */
-  --focus: #1D4ED8;
+  --focus: #1d4ed8;
   --focus-ring: rgba(29, 78, 216, 0.2);
 
   /* Superfícies elevadas */
@@ -44,9 +48,9 @@
   /* Sidebar */
   --sidebar-bg: var(--surface);
   --sidebar-border: var(--border);
-  --sidebar-hover: #F1F5F9;
-  --sidebar-active: #EFF6FF;
-  --sidebar-active-border: #BFDBFE;
+  --sidebar-hover: #f1f5f9;
+  --sidebar-active: #eff6ff;
+  --sidebar-active-border: #bfdbfe;
   --sidebar-text: var(--text);
   --sidebar-text-muted: var(--text-muted);
   --sidebar-icon: var(--text-muted);
@@ -73,16 +77,19 @@
   --toast-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 
   /* Skeleton */
-  --skeleton-from: #E2E8F0;
-  --skeleton-to: #F1F5F9;
+  --skeleton-from: #e2e8f0;
+  --skeleton-to: #f1f5f9;
 
   /* Scrollbar */
-  --scrollbar-thumb: #CBD5E1;
+  --scrollbar-thumb: #cbd5e1;
   --scrollbar-track: transparent;
 
   /* Tipografia */
-  --font-sans: 'Inter', 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Geist Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+  --font-sans:
+    'Inter', 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    sans-serif;
+  --font-mono:
+    'JetBrains Mono', 'Geist Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
 
   /* Espaçamento e Raio */
   --radius-sm: 6px;
@@ -118,36 +125,40 @@
 .dark {
   /* ===== TOKENS SEMÂNTICOS - TEMA ESCURO ===== */
   /* Base */
-  --background: #0B1220;
-  --surface: #111B2C;
-  --text: #F1F5F9;
-  --text-muted: #B4C1D4;
+  --background: #0b1220;
+  --surface: #111b2c;
+  --text: #f1f5f9;
+  --text-muted: #b4c1d4;
   --border: #344259;
-  --control-border: #8091AB;
+  --control-border: #8091ab;
 
   /* Ações e Estados */
-  --primary: #93C5FD;
-  --primary-hover: #BFDBFE;
-  --on-primary: #0B1220;
+  --primary: #93c5fd;
+  --primary-hover: #bfdbfe;
+  --on-primary: #0b1220;
 
-  --positive: #6EE7B7;
-  --positive-bg: #064E3B;
-  --positive-border: #065F46;
+  --positive: #6ee7b7;
+  --positive-hover: #34d399;
+  --positive-bg: #064e3b;
+  --positive-border: #065f46;
+  --on-positive: #064e3b;
 
-  --negative: #FDA4AF;
-  --negative-bg: #7F1D1D;
-  --negative-border: #991B1B;
+  --negative: #fda4af;
+  --negative-hover: #fca5a5;
+  --negative-bg: #7f1d1d;
+  --negative-border: #991b1b;
+  --on-negative: #7f1d1d;
 
-  --warning: #FCD34D;
-  --warning-bg: #78350F;
-  --warning-border: #92400E;
+  --warning: #fcd34d;
+  --warning-bg: #78350f;
+  --warning-border: #92400e;
 
-  --transfer: #A78BFA;
-  --transfer-bg: #3B0764;
-  --transfer-border: #581C87;
+  --transfer: #a78bfa;
+  --transfer-bg: #3b0764;
+  --transfer-border: #581c87;
 
   /* Foco */
-  --focus: #93C5FD;
+  --focus: #93c5fd;
   --focus-ring: rgba(147, 197, 253, 0.3);
 
   /* Superfícies elevadas */
@@ -159,7 +170,7 @@
   /* Sidebar */
   --sidebar-bg: var(--surface);
   --sidebar-border: var(--border);
-  --sidebar-hover: #1E293B;
+  --sidebar-hover: #1e293b;
   --sidebar-active: rgba(29, 78, 216, 0.15);
   --sidebar-active-border: rgba(29, 78, 216, 0.3);
   --sidebar-text: var(--text);
@@ -188,7 +199,7 @@
   --toast-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
 
   /* Skeleton */
-  --skeleton-from: #1E293B;
+  --skeleton-from: #1e293b;
   --skeleton-to: #334155;
 
   /* Scrollbar */
@@ -198,28 +209,28 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
-    --background: #0B1220;
-    --surface: #111B2C;
-    --text: #F1F5F9;
-    --text-muted: #B4C1D4;
+    --background: #0b1220;
+    --surface: #111b2c;
+    --text: #f1f5f9;
+    --text-muted: #b4c1d4;
     --border: #344259;
-    --control-border: #8091AB;
-    --primary: #93C5FD;
-    --primary-hover: #BFDBFE;
-    --on-primary: #0B1220;
-    --positive: #6EE7B7;
-    --positive-bg: #064E3B;
-    --positive-border: #065F46;
-    --negative: #FDA4AF;
-    --negative-bg: #7F1D1D;
-    --negative-border: #991B1B;
-    --warning: #FCD34D;
-    --warning-bg: #78350F;
-    --warning-border: #92400E;
-    --transfer: #A78BFA;
-    --transfer-bg: #3B0764;
-    --transfer-border: #581C87;
-    --focus: #93C5FD;
+    --control-border: #8091ab;
+    --primary: #93c5fd;
+    --primary-hover: #bfdbfe;
+    --on-primary: #0b1220;
+    --positive: #6ee7b7;
+    --positive-bg: #064e3b;
+    --positive-border: #065f46;
+    --negative: #fda4af;
+    --negative-bg: #7f1d1d;
+    --negative-border: #991b1b;
+    --warning: #fcd34d;
+    --warning-bg: #78350f;
+    --warning-border: #92400e;
+    --transfer: #a78bfa;
+    --transfer-bg: #3b0764;
+    --transfer-border: #581c87;
+    --focus: #93c5fd;
     --focus-ring: rgba(147, 197, 253, 0.3);
     --card: var(--surface);
     --card-border: var(--border);
@@ -227,7 +238,7 @@
     --card-shadow-hover: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.2);
     --sidebar-bg: var(--surface);
     --sidebar-border: var(--border);
-    --sidebar-hover: #1E293B;
+    --sidebar-hover: #1e293b;
     --sidebar-active: rgba(29, 78, 216, 0.15);
     --sidebar-active-border: rgba(29, 78, 216, 0.3);
     --sidebar-text: var(--text);
@@ -244,7 +255,7 @@
     --toast-bg: var(--surface);
     --toast-border: var(--border);
     --toast-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
-    --skeleton-from: #1E293B;
+    --skeleton-from: #1e293b;
     --skeleton-to: #334155;
     --scrollbar-thumb: #475569;
   }
@@ -262,11 +273,15 @@
   --color-primary-hover: var(--primary-hover);
   --color-on-primary: var(--on-primary);
   --color-positive: var(--positive);
+  --color-positive-hover: var(--positive-hover);
   --color-positive-bg: var(--positive-bg);
   --color-positive-border: var(--positive-border);
+  --color-on-positive: var(--on-positive);
   --color-negative: var(--negative);
+  --color-negative-hover: var(--negative-hover);
   --color-negative-bg: var(--negative-bg);
   --color-negative-border: var(--negative-border);
+  --color-on-negative: var(--on-negative);
   --color-warning: var(--warning);
   --color-warning-bg: var(--warning-bg);
   --color-warning-border: var(--warning-border);
@@ -359,7 +374,9 @@ body {
   font-size: 16px;
   line-height: 1.5;
   min-height: 100vh;
-  transition: background-color var(--transition-base), color var(--transition-base);
+  transition:
+    background-color var(--transition-base),
+    color var(--transition-base);
 }
 
 /* Focus visible para acessibilidade */
@@ -408,7 +425,10 @@ body {
   border: 1px solid var(--card-border);
   border-radius: var(--radius-xl);
   box-shadow: var(--card-shadow);
-  transition: box-shadow var(--transition-base), transform var(--transition-fast), border-color var(--transition-base);
+  transition:
+    box-shadow var(--transition-base),
+    transform var(--transition-fast),
+    border-color var(--transition-base);
 }
 
 .card:hover {
@@ -551,42 +571,81 @@ body {
 
 /* Skeleton */
 .skeleton {
-  background: linear-gradient(90deg, var(--skeleton-from) 25%, var(--skeleton-to) 50%, var(--skeleton-from) 75%);
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-from) 25%,
+    var(--skeleton-to) 50%,
+    var(--skeleton-from) 75%
+  );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: var(--radius-md);
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 /* Animações */
 @keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slide-up {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slide-down {
-  from { opacity: 0; transform: translateY(-8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes scale-in {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
-.animate-fade-in { animation: fade-in var(--transition-base) ease-out; }
-.animate-slide-up { animation: slide-up var(--transition-slow) ease-out; }
-.animate-slide-down { animation: slide-down var(--transition-slow) ease-out; }
-.animate-scale-in { animation: scale-in var(--transition-base) ease-out; }
+.animate-fade-in {
+  animation: fade-in var(--transition-base) ease-out;
+}
+.animate-slide-up {
+  animation: slide-up var(--transition-slow) ease-out;
+}
+.animate-slide-down {
+  animation: slide-down var(--transition-slow) ease-out;
+}
+.animate-scale-in {
+  animation: scale-in var(--transition-base) ease-out;
+}
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
@@ -656,7 +715,7 @@ body {
 }
 
 .hidden-value::before {
-  content: "••••••";
+  content: '••••••';
 }
 
 /* Tabular numbers para valores monetários */
