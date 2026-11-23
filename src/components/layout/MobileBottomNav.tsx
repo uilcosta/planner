@@ -14,7 +14,6 @@ import {
   Building2,
   Settings,
   Plus,
-  ChevronDown,
   X,
 } from 'lucide-react';
 
@@ -26,7 +25,7 @@ const mainNavigation = [
 ];
 
 const moreItems = [
-  { name: 'Nova caixinha', href: '/caixinhas', icon: PiggyBank, action: true },
+  { name: 'Novo lançamento', href: '#novo-lancamento', icon: Plus, action: true },
   { name: 'Caixinhas', href: '/caixinhas', icon: PiggyBank },
   { name: 'Planejamento', href: '/planejamento', icon: Calendar },
   { name: 'Categorias', href: '/categorias', icon: Tag },
@@ -73,14 +72,15 @@ export function MobileBottomNav({ onNewLaunch }: MobileBottomNavProps) {
           );
         })}
 
-        {/* Botão Novo Lançamento flutuante acima da nav */}
+        {/* Botão Novo Lançamento flutuante acima da nav (FAB) */}
         <button
           type="button"
           onClick={onNewLaunch}
-          className="absolute -top-3 left-1/2 -translate-x-1/2 z-60 h-12 w-12 rounded-full bg-primary text-on-primary shadow-xl flex items-center justify-center transition-all hover:shadow-2xl hover:scale-105 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          className="absolute -top-3 left-1/2 -translate-x-1/2 z-60 h-12 w-12 rounded-full bg-primary text-on-primary shadow-xl flex items-center justify-center gap-1.5 transition-all hover:shadow-2xl hover:scale-105 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           aria-label="Novo lançamento"
         >
           <Plus className="h-6 w-6" aria-hidden="true" />
+          <span className="hidden sm:inline-block text-xs font-semibold leading-none">Lançar</span>
         </button>
       </nav>
 
@@ -111,24 +111,29 @@ export function MobileBottomNav({ onNewLaunch }: MobileBottomNavProps) {
               </button>
             </div>
 
-            {/* Novo Lançamento como primeira ação */}
-            <button
-              type="button"
-              onClick={() => {
-                setMoreOpen(false);
-                onNewLaunch();
-              }}
-              className="flex items-center gap-3 px-4 py-3 text-base font-medium text-primary hover:bg-background transition-colors border-b border-border"
-            >
-              <Plus className="h-5 w-5" aria-hidden="true" />
-              <span>Novo lançamento</span>
-            </button>
-
-            {/* Lista de itens */}
+            {/* Lista de itens - Novo lançamento primeiro com action=true */}
             <nav className="flex-1 overflow-y-auto p-2 space-y-1" aria-label="Mais opções">
-              {moreItems.map((item) => {
-                const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+              {moreItems.map((item, index) => {
+                const isActive = index === 0 ? false : (pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href)));
                 const Icon = item.icon;
+
+                if (item.action) {
+                  return (
+                    <button
+                      key={item.name}
+                      type="button"
+                      onClick={() => {
+                        setMoreOpen(false);
+                        onNewLaunch();
+                      }}
+                      className="flex items-center gap-3 px-4 py-3 text-base font-medium text-primary hover:bg-background transition-colors border-b border-border"
+                    >
+                      <Icon className="h-5 w-5" aria-hidden="true" />
+                      <span>{item.name}</span>
+                    </button>
+                  );
+                }
+
                 return (
                   <Link
                     key={item.name}
