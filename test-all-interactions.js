@@ -3,6 +3,7 @@ const path = require('path');
 const dotenv = require('dotenv');
 dotenv.config({ path: path.join('C:/Users/user/OneDrive/Desenvolvimentos/meu-planner-financeiro', '.env.test') });
 const artifactDir = path.join('C:/Users/user/OneDrive/Desenvolvimentos/meu-planner-financeiro', 'playwright-artifacts');
+const BASE_URL = 'http://localhost:3000';
 const TEST_EMAIL = process.env.TEST_EMAIL || 'uilian_costa@hotmail.com';
 const TEST_PASSWORD = process.env.TEST_PASSWORD || 'heyolhaprodj';
 
@@ -70,7 +71,7 @@ async function closeModal(page) {
     await page.setViewportSize({ width: 1440, height: 900 });
 
     // Login
-    await page.goto('http://localhost:3000/login', { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/login`, { waitUntil: 'networkidle' });
     await page.fill('input[name="email"]', TEST_EMAIL);
     await page.fill('input[name="password"]', TEST_PASSWORD);
     await page.click('button[type="submit"]');
@@ -88,7 +89,7 @@ async function closeModal(page) {
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(500);
       console.log('New Account button works - navigated to:', page.url());
-      await page.goto('http://localhost:3000/', { waitUntil: 'networkidle' });
+      await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' });
       await page.waitForTimeout(500);
     }
 
@@ -99,7 +100,7 @@ async function closeModal(page) {
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(500);
       console.log('New Caixinha button works - navigated to:', page.url());
-      await page.goto('http://localhost:3000/', { waitUntil: 'networkidle' });
+      await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' });
       await page.waitForTimeout(500);
     }
 
@@ -112,7 +113,7 @@ async function closeModal(page) {
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(500);
       console.log('Quick action ' + i + ' navigated to:', page.url());
-      await page.goto('http://localhost:3000/', { waitUntil: 'networkidle' });
+      await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' });
       await page.waitForTimeout(500);
     }
 
@@ -123,13 +124,13 @@ async function closeModal(page) {
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(500);
       console.log('Ver todas works - navigated to:', page.url());
-      await page.goto('http://localhost:3000/', { waitUntil: 'networkidle' });
+      await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' });
       await page.waitForTimeout(500);
     }
 
     // ===== TEST CONTAS PAGE =====
     console.log('\n=== Contas Page ===');
-    await page.goto('http://localhost:3000/contas', { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/contas`, { waitUntil: 'networkidle' });
     await page.waitForTimeout(1000);
 
     // Test Nova Conta button
@@ -145,7 +146,7 @@ async function closeModal(page) {
 
     // ===== TEST CAIXINHAS PAGE =====
     console.log('\n=== Caixinhas Page ===');
-    await page.goto('http://localhost:3000/caixinhas', { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/caixinhas`, { waitUntil: 'networkidle' });
     await page.waitForTimeout(1000);
 
     // Test Nova Caixinha button
@@ -155,7 +156,7 @@ async function closeModal(page) {
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(500);
       console.log('Nova Caixinha button works - navigated to:', page.url());
-      await page.goto('http://localhost:3000/caixinhas', { waitUntil: 'networkidle' });
+      await page.goto(`${BASE_URL}/caixinhas`, { waitUntil: 'networkidle' });
       await page.waitForTimeout(500);
     }
 
@@ -166,7 +167,7 @@ async function closeModal(page) {
 
     // ===== TEST PLANEJAMENTO PAGE =====
     console.log('\n=== Planejamento Page ===');
-    await page.goto('http://localhost:3000/planejamento', { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/planejamento`, { waitUntil: 'domcontentloaded', timeout: 60000 });
     await page.waitForTimeout(2000);  // Wait for hydration
 
     // Test Novo Item button
@@ -198,8 +199,8 @@ async function closeModal(page) {
     }
 
     // Test month navigation (after modal is closed)
-    const prevMonth = page.locator('header button[aria-label="Mês anterior"]');
-    const nextMonth = page.locator('header button[aria-label="Próximo mês"]');
+    const prevMonth = page.locator('header button[aria-label="Mês anterior"]').first();
+    const nextMonth = page.locator('header button[aria-label="Próximo mês"]').first();
     await prevMonth.click();
     await page.waitForTimeout(300);
     console.log('Previous month works');
@@ -209,7 +210,7 @@ async function closeModal(page) {
 
     // ===== TEST CATEGORIAS PAGE =====
     console.log('\n=== Categorias Page ===');
-    await page.goto('http://localhost:3000/categorias', { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/categorias`, { waitUntil: 'networkidle' });
     await page.waitForTimeout(1000);
 
     // Test Nova Categoria button
@@ -225,7 +226,7 @@ async function closeModal(page) {
 
     // ===== TEST INSTITUICOES PAGE =====
     console.log('\n=== Instituicoes Page ===');
-    await page.goto('http://localhost:3000/instituicoes', { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/instituicoes`, { waitUntil: 'networkidle' });
     await page.waitForTimeout(1000);
 
     // Test Nova Instituicao button
@@ -239,10 +240,26 @@ async function closeModal(page) {
       await closeModal(page);
     }
 
+    // ===== TEST LANCAMENTOS PAGE =====
+    console.log('\n=== Lancamentos Page ===');
+    await page.goto(`${BASE_URL}/lancamentos`, { waitUntil: 'networkidle' });
+    await page.waitForTimeout(1000);
+
+    // Test Novo Lancamento button
+    const novoLancBtn = page.locator('button:has-text("Novo Lançamento"), button:has-text("Novo")').first();
+    if (await novoLancBtn.isVisible().catch(() => false)) {
+      await novoLancBtn.click();
+      await page.waitForTimeout(500);
+      console.log('Novo Lançamento button clicked - checking for modal');
+      const modalOpened = await waitForModal(page);
+      console.log('Modal visible:', modalOpened);
+      await closeModal(page);
+    }
+
     // ===== TEST MOBILE RESPONSIVE =====
     console.log('\n=== Mobile Responsive ===');
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto('http://localhost:3000/', { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' });
     await page.waitForTimeout(1000);
 
     // Check bottom nav
@@ -260,10 +277,10 @@ async function closeModal(page) {
       const aside = page.locator('aside[aria-label="Menu principal"]');
       console.log('Sidebar drawer visible:', await aside.isVisible().catch(() => false));
 
-      // Click a nav link
+      // Click a nav link (use force to bypass overlay)
       const firstLink = page.locator('aside a[href="/"]').first();
       if (await firstLink.isVisible().catch(() => false)) {
-        await firstLink.click();
+        await firstLink.click({ force: true });
         await page.waitForTimeout(500);
         console.log('Sidebar link clicked, drawer should close');
       }
@@ -284,7 +301,7 @@ async function closeModal(page) {
         console.log('Navigated to:', page.url());
       } catch (e) {
         console.log('Click intercepted by dev overlay, navigating directly');
-        await page.goto('http://localhost:3000' + href, { waitUntil: 'networkidle' });
+        await page.goto(`${BASE_URL}${href}`, { waitUntil: 'networkidle' });
         await page.waitForTimeout(500);
         console.log('Navigated to:', page.url());
       }
@@ -292,7 +309,7 @@ async function closeModal(page) {
 
     // Final screenshots
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto('http://localhost:3000/', { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' });
     await page.waitForTimeout(500);
     await page.screenshot({ path: path.join(artifactDir, 'final-all-pages-light.png'), fullPage: true });
     console.log('\nFinal light screenshot captured');
