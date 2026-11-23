@@ -1,9 +1,11 @@
 const { chromium } = require('playwright');
 const path = require('path');
+const dotenv = require('dotenv');
+dotenv.config({ path: path.join('C:/Users/user/OneDrive/Desenvolvimentos/meu-planner-financeiro', '.env.test') });
 const artifactDir = path.join('C:/Users/user/OneDrive/Desenvolvimentos/meu-planner-financeiro', 'playwright-artifacts');
 const BASE_URL = 'http://localhost:3000';
-const TEST_EMAIL = 'uilian_costa@hotmail.com';
-const TEST_PASSWORD = 'heyolhaprodj';
+const TEST_EMAIL = process.env.TEST_EMAIL;
+const TEST_PASSWORD = process.env.TEST_PASSWORD;
 
 (async () => {
   const browser = await chromium.launch({ headless: false, slowMo: 500 });
